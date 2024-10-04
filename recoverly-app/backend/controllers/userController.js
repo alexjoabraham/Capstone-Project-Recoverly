@@ -1,6 +1,18 @@
-const User = require('../models/User');  
+const User = require('../models/User');
+
 const registerUser = async (req, res) => {
-  const { name, email, phone, password } = req.body;
+  const { 
+    name, 
+    email, 
+    phone, 
+    password, 
+    org_name, 
+    org_address, 
+    city, 
+    state, 
+    pincode, 
+    secure_code 
+  } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -13,6 +25,12 @@ const registerUser = async (req, res) => {
       email,
       phone,
       password,  
+      org_name,   
+      org_address,
+      city,
+      state,
+      pincode,
+      secure_code,
     });
 
     await user.save();
