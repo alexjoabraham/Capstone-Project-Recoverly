@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from 'react-router-dom'; 
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -110,6 +111,11 @@ const Register = () => {
         
         <button type="submit" className="btn btn-primary btn-block">Register</button>
       </form>
+
+      <div className="text-center mt-4">
+        <p>Already a user? <Link to="/login">Login here</Link></p> 
+      </div>
+
       <ToastContainer /> 
     </div>
   );
