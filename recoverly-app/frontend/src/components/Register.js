@@ -5,6 +5,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
+import { Container, TextField, Button, Typography } from '@mui/material'; // Import Material-UI components
 
 const validationSchema = Yup.object({
   user_name: Yup.string().required('Name is required'),
@@ -48,161 +49,177 @@ const Register = () => {
   });
 
   return (
-    <div className="container mt-5 mb-5">
-      <h2 className="text-center">Register</h2>
+    <Container maxWidth="sm" style={{ marginTop: '50px' }}>
+      <Typography variant="h5" align="center">Register</Typography>
       <form onSubmit={formik.handleSubmit} className="mt-4">
-        <div className="form-group mb-3">
-          <input
-            type="text"
-            className={`form-control ${formik.touched.user_name && formik.errors.user_name ? 'is-invalid' : ''}`}
-            name="user_name"
-            placeholder="Your Name"
-            value={formik.values.user_name}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.user_name && formik.errors.user_name ? <div className="invalid-feedback">{formik.errors.user_name}</div> : null}
-        </div>
+        <TextField
+          label="Your Name"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="user_name"
+          value={formik.values.user_name}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.user_name && Boolean(formik.errors.user_name)}
+          helperText={formik.touched.user_name && formik.errors.user_name}
+          required
+        />
 
-        <div className="form-group mb-3">
-          <input
-            type="email"
-            className={`form-control ${formik.touched.user_email && formik.errors.user_email ? 'is-invalid' : ''}`}
-            name="user_email"
-            placeholder="Your Email"
-            value={formik.values.user_email}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.user_email && formik.errors.user_email ? <div className="invalid-feedback">{formik.errors.user_email}</div> : null}
-        </div>
+        <TextField
+          label="Your Email"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="user_email"
+          type="email"
+          value={formik.values.user_email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.user_email && Boolean(formik.errors.user_email)}
+          helperText={formik.touched.user_email && formik.errors.user_email}
+          required
+        />
 
-        <div className="form-group mb-3">
-          <input
-            type="text"
-            className={`form-control ${formik.touched.user_phone && formik.errors.user_phone ? 'is-invalid' : ''}`}
-            name="user_phone"
-            placeholder="Your Phone Number"
-            value={formik.values.user_phone}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.user_phone && formik.errors.user_phone ? <div className="invalid-feedback">{formik.errors.user_phone}</div> : null}
-        </div>
+        <TextField
+          label="Your Phone Number"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="user_phone"
+          value={formik.values.user_phone}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.user_phone && Boolean(formik.errors.user_phone)}
+          helperText={formik.touched.user_phone && formik.errors.user_phone}
+          required
+        />
 
-        <div className="form-group mb-3">
-          <input
-            type="text"
-            className={`form-control ${formik.touched.org_name && formik.errors.org_name ? 'is-invalid' : ''}`}
-            name="org_name"
-            placeholder="Organization Name"
-            value={formik.values.org_name}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.org_name && formik.errors.org_name ? <div className="invalid-feedback">{formik.errors.org_name}</div> : null}
-        </div>
+        <TextField
+          label="Organization Name"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="org_name"
+          value={formik.values.org_name}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.org_name && Boolean(formik.errors.org_name)}
+          helperText={formik.touched.org_name && formik.errors.org_name}
+          required
+        />
 
-        <div className="form-group mb-3">
-          <input
-            type="text"
-            className={`form-control ${formik.touched.org_address && formik.errors.org_address ? 'is-invalid' : ''}`}
-            name="org_address"
-            placeholder="Organization Address"
-            value={formik.values.org_address}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.org_address && formik.errors.org_address ? <div className="invalid-feedback">{formik.errors.org_address}</div> : null}
-        </div>
+        <TextField
+          label="Organization Address"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="org_address"
+          value={formik.values.org_address}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.org_address && Boolean(formik.errors.org_address)}
+          helperText={formik.touched.org_address && formik.errors.org_address}
+          required
+        />
 
-        <div className="form-group mb-3">
-          <input
-            type="text"
-            className={`form-control ${formik.touched.city && formik.errors.city ? 'is-invalid' : ''}`}
-            name="city"
-            placeholder="City"
-            value={formik.values.city}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.city && formik.errors.city ? <div className="invalid-feedback">{formik.errors.city}</div> : null}
-        </div>
+        <TextField
+          label="City"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="city"
+          value={formik.values.city}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.city && Boolean(formik.errors.city)}
+          helperText={formik.touched.city && formik.errors.city}
+          required
+        />
 
-        <div className="form-group mb-3">
-          <input
-            type="text"
-            className={`form-control ${formik.touched.state && formik.errors.state ? 'is-invalid' : ''}`}
-            name="state"
-            placeholder="State"
-            value={formik.values.state}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.state && formik.errors.state ? <div className="invalid-feedback">{formik.errors.state}</div> : null}
-        </div>
+        <TextField
+          label="State"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="state"
+          value={formik.values.state}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.state && Boolean(formik.errors.state)}
+          helperText={formik.touched.state && formik.errors.state}
+          required
+        />
 
-        <div className="form-group mb-4">
-          <input
-            type="text"
-            className={`form-control ${formik.touched.pincode && formik.errors.pincode ? 'is-invalid' : ''}`}
-            name="pincode"
-            placeholder="Postal Code"
-            value={formik.values.pincode}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.pincode && formik.errors.pincode ? <div className="invalid-feedback">{formik.errors.pincode}</div> : null}
-        </div>
+        <TextField
+          label="Postal Code"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="pincode"
+          value={formik.values.pincode}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.pincode && Boolean(formik.errors.pincode)}
+          helperText={formik.touched.pincode && formik.errors.pincode}
+          required
+        />
 
-        <div className="form-group mb-4">
-          <input
-            type="text"
-            className={`form-control ${formik.touched.secure_code && formik.errors.secure_code ? 'is-invalid' : ''}`}
-            name="secure_code"
-            placeholder="Secure Code"
-            value={formik.values.secure_code}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.secure_code && formik.errors.secure_code ? <div className="invalid-feedback">{formik.errors.secure_code}</div> : null}
-        </div>
+        <TextField
+          label="Secure Code"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="secure_code"
+          value={formik.values.secure_code}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.secure_code && Boolean(formik.errors.secure_code)}
+          helperText={formik.touched.secure_code && formik.errors.secure_code}
+          required
+        />
 
-        <div className="form-group mb-4">
-          <input
-            type="password"
-            className={`form-control ${formik.touched.user_password && formik.errors.user_password ? 'is-invalid' : ''}`}
-            name="user_password"
-            placeholder="Your Password"
-            value={formik.values.user_password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.user_password && formik.errors.user_password ? <div className="invalid-feedback">{formik.errors.user_password}</div> : null}
-        </div>
+        <TextField
+          label="Your Password"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="user_password"
+          type="password"
+          value={formik.values.user_password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.user_password && Boolean(formik.errors.user_password)}
+          helperText={formik.touched.user_password && formik.errors.user_password}
+          required
+        />
 
-        <div className="form-group mb-4">
-          <input
-            type="password"
-            className={`form-control ${formik.touched.retype_password && formik.errors.retype_password ? 'is-invalid' : ''}`}
-            name="retype_password"
-            placeholder="Retype Your Password"
-            value={formik.values.retype_password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.retype_password && formik.errors.retype_password ? <div className="invalid-feedback">{formik.errors.retype_password}</div> : null}
-        </div>
-        
-        <button type="submit" className="btn btn-primary btn-block">Register</button>
+        <TextField
+          label="Retype Your Password"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="retype_password"
+          type="password"
+          value={formik.values.retype_password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.retype_password && Boolean(formik.errors.retype_password)}
+          helperText={formik.touched.retype_password && formik.errors.retype_password}
+          required
+        />
+
+        <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '16px' }}>
+          Register
+        </Button>
       </form>
 
-      <div className="text-center mt-4">
-        <p>Already a user? <Link to="/login">Login here</Link></p> 
-      </div>
+      <Typography align="center" style={{ marginTop: '16px' }}>
+        Already a user? <Link to="/login">Login here</Link>
+      </Typography>
 
       <ToastContainer /> 
-    </div>
+    </Container>
   );
 };
 

@@ -5,15 +5,14 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
+import { Container, TextField, Button, Typography } from '@mui/material';
 
-// Validation schema using Yup
 const validationSchema = Yup.object({
   email: Yup.string().email('Invalid email address').required('Email is required'),
   password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
 });
 
 const Login = () => {
-  // Formik hook for handling form submission and validation
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -33,42 +32,46 @@ const Login = () => {
   });
 
   return (
-    <div className="container mt-5 mb-5">
-      <h2 className="text-center">Login</h2>
+    <Container maxWidth="xs" style={{ marginTop: '50px' }}>
+      <Typography variant="h5" align="center">Login</Typography>
       <form onSubmit={formik.handleSubmit} className="mt-4">
-        <div className="form-group mb-3">
-          <input
-            type="email"
-            className={`form-control ${formik.touched.email && formik.errors.email ? 'is-invalid' : ''}`}
-            name="email"
-            placeholder="Your Email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-          />
-          {formik.touched.email && formik.errors.email ? <div className="invalid-feedback">{formik.errors.email}</div> : null}
-        </div>
-        <div className="form-group mb-3">
-          <input
-            type="password"
-            className={`form-control ${formik.touched.password && formik.errors.password ? 'is-invalid' : ''}`}
-            name="password"
-            placeholder="Your Password"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-          />
-          {formik.touched.password && formik.errors.password ? <div className="invalid-feedback">{formik.errors.password}</div> : null}
-        </div>
-        <button type="submit" className="btn btn-primary btn-block">Login</button>
+        <TextField
+          label="Your Email"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="email"
+          type="email"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
+          required
+        />
+        <TextField
+          label="Your Password"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="password"
+          type="password"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
+          required
+        />
+        <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '16px' }}>
+          Login
+        </Button>
       </form>
-      <p className="text-center mt-3">
+      <Typography align="center" style={{ marginTop: '16px' }}>
         Not a user? <Link to="/register">Register</Link>
-      </p>
+      </Typography>
       <ToastContainer /> 
-    </div>
+    </Container>
   );
 };
 
