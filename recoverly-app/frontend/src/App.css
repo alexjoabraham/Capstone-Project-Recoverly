@@ -63,34 +63,36 @@ button:hover {
   color: #0056b3; 
 }
 
-/* Navbar Styles */
 .navbar {
-  background-color: #212a31; /* Dark gray-blue for the navbar */
+  background-color: #212a31; 
 }
 
 .navbar .MuiToolbar {
-  padding: 0; /* Remove default padding */
+  padding: 0; 
 }
 
 .navbar .MuiTypography-h6 {
   font-weight: bold;
-  color: white; /* Ensure the text is white for contrast */
+  color: white; 
 }
 
 .navbar .MuiButton {
-  margin-left: 16px; /* Space between buttons */
-  text-transform: uppercase; /* Uppercase text for buttons */
+  margin-left: 16px; 
+  text-transform: uppercase;
 }
 
-/* Footer Styles */
 .footer {
-  background-color: #212a31; /* Match the navbar */
+  background-color: #212a31; 
   color: white; 
   padding: 20px 0; 
   position: relative; 
   bottom: 0; 
   width: 100%; 
   text-align: center; 
+}
+
+.MuiTextField-root {
+  margin-bottom: 16px !important;
 }
 
 
