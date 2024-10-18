@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const adminSchema = new mongoose.Schema({
   admin_name: { type: String, required: true },
+  admin_email: { type: String, required: true },
   admin_phone: { type: String, required: true },
   organization_name: { type: String, required: true },
   organization_address: { type: String, required: true },

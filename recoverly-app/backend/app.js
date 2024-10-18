@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db'); 
 const userRoutes = require('./routes/userRoutes'); 
-// const adminRoutes = require('./routes/adminRoutes'); 
+const adminRoutes = require('./routes/adminRoutes'); 
 
 dotenv.config();
 
@@ -15,6 +15,7 @@ app.use(cors());
 connectDB();
 
 app.use('/api/users', userRoutes);  
+app.use('/api/admins', adminRoutes);  
 
 app.get('/', (req, res) => {
   res.send('API is running...');

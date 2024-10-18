@@ -12,7 +12,7 @@ const validationSchema = Yup.object({
   password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
 });
 
-const Login = () => {
+const AdminLogin = () => {
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -75,4 +75,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;
