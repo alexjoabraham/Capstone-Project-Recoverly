@@ -6,7 +6,7 @@ const Navbar = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-      <img 
+        <img 
           src="/images/logo.png" 
           alt="Logo" 
           style={{ height: '40px', marginRight: '16px' }} 
@@ -15,8 +15,10 @@ const Navbar = () => {
           Recoverly
         </Typography>
         <Button color="inherit" component={Link} to="/">Home</Button>
-        <Button color="inherit" component={Link} to="/login">Login</Button>
-        <Button color="inherit" component={Link} to="/register">Register</Button>
+        <Button color="inherit" component={Link} to="/admin-login">Admin Login</Button>
+        <Button color="inherit" component={Link} to="/admin-register">Admin Register</Button>
+        <Button color="inherit" component={Link} to="/user-login">User Login</Button> 
+        <Button color="inherit" component={Link} to="/user-register">User Register</Button> 
         <Button color="inherit" component={Link} to="/report-lost-item">Report Lost Item</Button>
       </Toolbar>
     </AppBar>

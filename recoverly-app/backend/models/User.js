@@ -19,30 +19,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    org_name: {
-      type: String,
-      required: true,
-    },
-    org_address: {
-      type: String,
-      required: true,
-    },
-    city: {
-      type: String,
-      required: true,
-    },
-    state: {
-      type: String,
-      required: true,
-    },
-    pincode: {
-      type: String,
-      required: true,
-    },
-    secure_code: {
-      type: String,
-      required: true,
-    },
   },
   { timestamps: true }
 );
