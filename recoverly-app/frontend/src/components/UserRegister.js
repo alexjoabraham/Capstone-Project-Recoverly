@@ -9,7 +9,7 @@ import { Container, TextField, Button, Typography } from '@mui/material';
 const validationSchema = Yup.object({
   user_name: Yup.string().required('Name is required'),
   user_email: Yup.string().email('Invalid email').required('Email is required'),
-  user_phone: Yup.string().required('Phone is required'),
+  user_phone: Yup.string().matches(/^[0-9]{10}$/, 'Phone number must be 10 digits').required('Phone number is required'),
   user_password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
   confirm_password: Yup.string()
     .oneOf([Yup.ref('user_password'), null], 'Passwords must match')
