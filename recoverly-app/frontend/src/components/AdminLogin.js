@@ -21,7 +21,7 @@ const AdminLogin = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await axios.post('http://localhost:5000/api/users/login', values);
+        const response = await axios.post('http://localhost:5000/api/admins/login', values);
         console.log('User logged in successfully:', response.data);
         toast.success('User logged in successfully!');
       } catch (error) {
@@ -68,7 +68,7 @@ const AdminLogin = () => {
         </Button>
       </form>
       <Typography align="center" style={{ marginTop: '16px' }}>
-        Not a user? <Link to="/register">Register</Link>
+        Not an Admin? <Link to="/register">Register</Link>
       </Typography>
       <ToastContainer /> 
     </Container>
