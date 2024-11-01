@@ -7,8 +7,9 @@ import Footer from './components/Footer';
 import AdminRegister from './components/AdminRegister';  
 import AdminLogin from './components/AdminLogin'; 
 import ReportLostItem from './components/ReportLostItem';
-import UserRegister from './components/UserRegister';  // Import UserRegister
-import UserLogin from './components/UserLogin';  // Import UserLogin
+import UserRegister from './components/UserRegister';  
+import UserLogin from './components/UserLogin';  
+import HomePage from './components/HomePage';
 import theme from './theme';
 
 function App() {
@@ -23,7 +24,8 @@ function App() {
             <Route path="/report-lost-item" element={<ReportLostItem />} />
             <Route path="/user-register" element={<UserRegister />} /> 
             <Route path="/user-login" element={<UserLogin />} /> 
-            <Route path="/" element={<AdminRegister />} /> 
+            {/* <Route path="/" element={<AdminRegister />} />  */}
+            <Route path="/" element={<HomePage />} />
           </Routes>
         </div>
         <Footer />
