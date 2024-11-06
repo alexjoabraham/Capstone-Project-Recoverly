@@ -167,7 +167,7 @@ const AdminRegister = () => {
       </form>
 
       <Typography align="center" style={{ marginTop: '16px' }}>
-        Already registered? <Link to="/login">Login here</Link>
+        Already registered? <Link to="/admin-login">Login Here</Link>
       </Typography>
 
       <ToastContainer />
