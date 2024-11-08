@@ -2,6 +2,7 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Container, TextField, Button, Typography } from '@mui/material';
@@ -38,7 +39,7 @@ const UserRegister = () => {
 
   return (
     <Container maxWidth="xs">
-      <Typography variant="h5">Register</Typography>
+      <Typography variant="h5">User Registration</Typography>
       <form onSubmit={formik.handleSubmit}>
         <TextField
           label="Name"
@@ -96,6 +97,9 @@ const UserRegister = () => {
           Register
         </Button>
       </form>
+      <Typography align="center" style={{ marginTop: '16px' }}>
+        Already registered? <Link to="/user-login">Login Here</Link>
+      </Typography>
       <ToastContainer />
     </Container>
   );

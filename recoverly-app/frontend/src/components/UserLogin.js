@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from 'react-router-dom';
 import { Container, TextField, Button, Typography } from '@mui/material';
 
 const validationSchema = Yup.object({
@@ -30,7 +31,7 @@ const UserLogin = () => {
 
   return (
     <Container maxWidth="xs">
-      <Typography variant="h5">Login</Typography>
+      <Typography variant="h5">User Login</Typography>
       <form onSubmit={formik.handleSubmit}>
         <TextField
           label="Email"
@@ -57,6 +58,9 @@ const UserLogin = () => {
           Login
         </Button>
       </form>
+      <Typography align="center" style={{ marginTop: '16px' }}>
+        New User? <Link to="/user-register">Register Here</Link>
+      </Typography>
       <ToastContainer />
     </Container>
   );

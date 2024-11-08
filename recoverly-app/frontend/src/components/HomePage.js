@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Container, Typography, Button, Grid, Card, CardContent } from '@mui/material';
+import { Box, Container, Typography, Button, Grid, Card, CardContent, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/system';
 
 const BackgroundBox = styled(Box)({
@@ -30,11 +31,44 @@ const FeatureCard = styled(Card)({
   },
 });
 
+const StyledDialogContent = styled(DialogContent)({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: '20px',
+  minHeight: '100px',
+});
+
+const StyledDialogActions = styled(DialogActions)({
+  justifyContent: 'center',
+  padding: '20px',
+});
+
 const HomePage = () => {
   const [showMore, setShowMore] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleLearnMore = () => {
     setShowMore(!showMore);
+  };
+
+  const handleGetStarted = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleUserLogin = () => {
+    navigate('/user-login');
+    setOpenModal(false);
+  };
+
+  const handleAdminLogin = () => {
+    navigate('/admin-login');
+    setOpenModal(false);
   };
 
   return (
@@ -50,11 +84,40 @@ const HomePage = () => {
           <Typography variant="body1" sx={{ mt: 2, maxWidth: 600, mx: 'auto' }}>
             Recoverly is here to help schools, colleges, gyms, offices, and other places manage lost and found items in one simple, user-friendly space. Whether you’re an admin keeping track of found items or hoping to find what’s been lost, Recoverly is designed to make the process easier, faster, and more secure.
           </Typography>
-          <Button variant="contained" color="primary" sx={{ mt: 4 }}>
+          <Button
+            variant="contained"
+            sx={{
+              mt: 4,
+              backgroundColor: '#ca7802',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: '#e5decc',
+                color: 'black'
+              },
+            }}
+            onClick={handleGetStarted}
+          >
             Get Started
           </Button>
         </TextContainer>
       </BackgroundBox>
+
+      <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
+        <DialogTitle align="center">Select Your Role</DialogTitle>
+        <StyledDialogContent>
+          <Typography variant="body1" align="center" sx={{ mb: 2 }}>
+            Continue as a User or Admin.
+          </Typography>
+          <StyledDialogActions>
+            <Button onClick={handleUserLogin} color="primary" variant="contained" sx={{ mx: 2 }}>
+              User
+            </Button>
+            <Button onClick={handleAdminLogin} color="secondary" variant="contained" sx={{ mx: 2 }}>
+              Admin
+            </Button>
+          </StyledDialogActions>
+        </StyledDialogContent>
+      </Dialog>
 
       <Box sx={{ py: 6 }}>
         <Typography variant="h4" align="center" gutterBottom>
@@ -74,10 +137,13 @@ const HomePage = () => {
             { title: 'Helpful Analytics', description: 'Admins can see real-time data on lost and found items to keep track of everything.' },
           ].map((feature, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
-              <FeatureCard>
+              <FeatureCard sx={{
+              backgroundColor: '#ca7802',
+              color: 'white'
+            }}>
                 <CardContent>
                   <Typography variant="h6">{feature.title}</Typography>
-                  <Typography variant="body2" >
+                  <Typography variant="body2">
                     {feature.description}
                   </Typography>
                 </CardContent>

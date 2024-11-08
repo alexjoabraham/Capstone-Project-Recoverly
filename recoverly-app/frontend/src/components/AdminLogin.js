@@ -68,7 +68,7 @@ const AdminLogin = () => {
         </Button>
       </form>
       <Typography align="center" style={{ marginTop: '16px' }}>
-        Not an Admin? <Link to="/register">Register</Link>
+        New Admin? <Link to="/admin-register">Register Here</Link>
       </Typography>
       <ToastContainer /> 
     </Container>
