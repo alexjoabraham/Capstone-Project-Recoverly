@@ -47,8 +47,8 @@ const ReportLostItem = () => {
       });
       toast.success('Lost item reported successfully!');
     } catch (error) {
-      toast.error('Error reporting lost item: ' + error.response?.data?.message || error.message);
-      
+      const errorMessage = error.response?.data?.message || 'Error reporting lost item';
+      toast.error(errorMessage);
     }
   };
 

@@ -23,9 +23,25 @@ const upload = multer({
       cb(null, `lost-items/${Date.now()}-${file.originalname}`);
     },
   }),
+  fileFilter: function (req, file, cb) {
+    const fileTypes = /jpeg|jpg|png|webp/;
+    const extName = fileTypes.test(file.mimetype);
+    if (extName) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only images with jpeg, jpg, png, or webp formats are allowed!'));
+    }
+  }
 });
 
-router.post('/report-lost-item', upload.single('lostitem_image'), async (req, res) => {
+router.post('/report-lost-item', (req, res, next) => {
+  upload.single('lostitem_image')(req, res, function (err) {
+    if (err) {
+      return res.status(400).json({ message: err.message });
+    }
+    next();
+  });
+}, async (req, res) => {
   try {
     const { lostitem_name, lostitem_location, lostitem_description, lostitem_category, lostitem_date } = req.body;
     const imageUrl = req.file ? req.file.location : null;
@@ -36,13 +52,13 @@ router.post('/report-lost-item', upload.single('lostitem_image'), async (req, re
       lostitem_description,
       lostitem_category,
       lostitem_date,
-      lostitem_image: imageUrl, 
+      lostitem_image: imageUrl,
     });
 
     await newLostItem.save();
     res.status(201).json({ message: 'Lost item reported successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error reporting lost item', error: error.message });
+    res.status(400).json({ message: error.message || 'Error reporting lost item' });
   }
 });
 
