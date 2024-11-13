@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
 import { Container, TextField, Button, Typography } from '@mui/material';
-
+//cya
 const validationSchema = Yup.object({
   admin_name: Yup.string().required('Admin Name is required'),
   admin_email: Yup.string().email('Invalid email address').required('Email is required'),
