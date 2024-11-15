@@ -13,6 +13,7 @@ import HomePage from './components/HomePage';
 import theme from './theme';
 import EmailList from './components/EmailList';
 import FoundItems from './components/FoundItems';
+import PaymentPage from './components/PaymentPage';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/email-list" element={<EmailList />} /> 
             <Route path="/found-items" element={<FoundItems />} /> 
+            <Route path="/payment" element={<PaymentPage />} />
           </Routes>
         </div>
         <Footer />

@@ -45,13 +45,8 @@ const StyledDialogActions = styled(DialogActions)({
 });
 
 const HomePage = () => {
-  const [showMore, setShowMore] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
-
-  const handleLearnMore = () => {
-    setShowMore(!showMore);
-  };
 
   const handleGetStarted = () => {
     setOpenModal(true);
@@ -69,6 +64,10 @@ const HomePage = () => {
   const handleAdminLogin = () => {
     navigate('/admin-login');
     setOpenModal(false);
+  };
+
+  const handleDonate = () => {
+    navigate('/payment'); // Navigate to PaymentPage for donation
   };
 
   return (
@@ -92,7 +91,7 @@ const HomePage = () => {
               color: 'white',
               '&:hover': {
                 backgroundColor: '#e5decc',
-                color: 'black'
+                color: 'black',
               },
             }}
             onClick={handleGetStarted}
@@ -119,40 +118,6 @@ const HomePage = () => {
         </StyledDialogContent>
       </Dialog>
 
-      <Box sx={{ py: 6 }}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Why Use Recoverly?
-        </Typography>
-        <Typography variant="body1" align="center" sx={{ maxWidth: 600, mx: 'auto', mb: 4 }}>
-          Managing lost and found items can be a hassle, but Recoverly makes it simple. Admins of the organizations can easily list found items, send updates to members, and manage claims all in one spot. Members can log in with a secure access code to search and claim their belongings, making it faster and easier for everyone to reconnect with what they’ve lost.
-        </Typography>
-
-        <Grid container spacing={4}>
-          {[
-            { title: 'One-Stop Platform', description: 'A single, easy-to-use platform for managing lost and found items across multiple organizations.' },
-            { title: 'Organization-Specific Access', description: 'Users can only view items from their own organization, ensuring privacy and security.' },
-            { title: 'Admin-Approved Claims', description: 'Admins review and approve claims, making sure items reach their rightful owners.' },
-            { title: 'Collection Deadlines', description: 'Items are available for a limited time, helping keep the system organized and efficient.' },
-            { title: 'Photo Uploads', description: 'Photos can be added to item listings to help users quickly identify their belongings.' },
-            { title: 'Helpful Analytics', description: 'Admins can see real-time data on lost and found items to keep track of everything.' },
-          ].map((feature, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <FeatureCard sx={{
-              backgroundColor: '#ca7802',
-              color: 'white'
-            }}>
-                <CardContent>
-                  <Typography variant="h6">{feature.title}</Typography>
-                  <Typography variant="body2">
-                    {feature.description}
-                  </Typography>
-                </CardContent>
-              </FeatureCard>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-
       <Box sx={{ py: 6, backgroundColor: '#f5f5f5', textAlign: 'center' }}>
         <Typography variant="h4" gutterBottom>
           Why Choose Recoverly?
@@ -160,22 +125,26 @@ const HomePage = () => {
         <Typography variant="h6" sx={{ maxWidth: 700, mx: 'auto', mb: 4 }}>
           Recoverly offers a simple, secure, and efficient solution for managing lost and found items.
         </Typography>
-        {showMore && (
-          <Box sx={{ mt: 4 }}>
-            <Typography variant="body1" sx={{ maxWidth: 700, mx: 'auto', mb: 4 }}>
-              User-Friendly: Simple navigation and search tools to help you find what you’re looking for.
-            </Typography>
-            <Typography variant="body1" sx={{ maxWidth: 700, mx: 'auto', mb: 4 }}>
-              Secure: Claim approvals and access codes ensure only the right people can collect items.
-            </Typography>
-            <Typography variant="body1" sx={{ maxWidth: 700, mx: 'auto', mb: 4 }}>
-              Efficient: Recoverly offers a single platform and helpful data to manage lost items better.
-            </Typography>
-          </Box>
-        )}
-        <Button variant="contained" color="primary" onClick={handleLearnMore}>
-          {showMore ? 'Show Less' : 'Show More'}
-        </Button>
+
+        <Box sx={{ mt: 4 }}>
+  <Typography variant="h4">Support Recoverly</Typography>
+  <Button
+    variant="contained"
+    sx={{
+      mt: 2,
+      backgroundColor: '#ca7802', // Same color as the Get Started button
+      color: 'white',
+      '&:hover': {
+        backgroundColor: '#e5decc', // Hover effect
+        color: 'black',
+      },
+    }}
+    onClick={handleDonate}
+  >
+    Donate with PayPal
+  </Button>
+</Box>
+
       </Box>
     </Container>
   );
