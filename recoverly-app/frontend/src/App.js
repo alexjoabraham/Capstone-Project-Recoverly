@@ -9,6 +9,7 @@ import AdminLogin from './components/AdminLogin';
 import ReportLostItem from './components/ReportLostItem';
 import UserRegister from './components/UserRegister';  
 import UserLogin from './components/UserLogin';  
+import UserHomePage from './components/UserHomePage';
 import HomePage from './components/HomePage';
 import theme from './theme';
 
@@ -24,6 +25,7 @@ function App() {
             <Route path="/report-lost-item" element={<ReportLostItem />} />
             <Route path="/user-register" element={<UserRegister />} /> 
             <Route path="/user-login" element={<UserLogin />} /> 
+            <Route path="/user-homepage" element={<UserHomePage />} />
             {/* <Route path="/" element={<AdminRegister />} />  */}
             <Route path="/" element={<HomePage />} />
           </Routes>
