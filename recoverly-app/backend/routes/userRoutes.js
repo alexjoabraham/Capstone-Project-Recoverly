@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const Admin = require('../models/Admin')
 
 router.post('/register', async (req, res) => {
   const { user_name, user_email, user_phone, user_password } = req.body;
@@ -32,6 +33,24 @@ router.post('/login', async (req, res) => {
     res.status(200).json({ message: 'User logged in successfully', user });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.post('/validate-organization', async (req, res) => {
+  const { organization_name, organization_securecode } = req.body;
+  try {
+    const admin = await Admin.findOne({ 
+      organization_name: organization_name, 
+      organization_securecode: organization_securecode 
+    });
+
+    if (admin) {
+      return res.status(200).json({ message: 'Validation successful' });
+    } else {
+      return res.status(401).json({ message: 'Invalid organization name or secure code' });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: 'Server error' });
   }
 });
 
