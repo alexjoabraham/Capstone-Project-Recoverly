@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { Container, TextField, Button, Typography } from '@mui/material';
 
 const validationSchema = Yup.object({
-  admin_name: Yup.string().required('Admin Name is required'),
+  admin_name: Yup.string().matches(/^[A-Za-z]+$/, 'Admin Name must contain only letters').required('Admin Name is required'),
   admin_email: Yup.string().email('Invalid email address').required('Email is required'),
   admin_phone: Yup.string().matches(/^[0-9]{10}$/, 'Phone number must be 10 digits').required('Phone number is required'),
   admin_password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),

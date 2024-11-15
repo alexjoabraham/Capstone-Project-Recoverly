@@ -11,6 +11,8 @@ import UserRegister from './components/UserRegister';
 import UserLogin from './components/UserLogin';  
 import HomePage from './components/HomePage';
 import theme from './theme';
+import EmailList from './components/EmailList';
+import FoundItems from './components/FoundItems';
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
             <Route path="/user-login" element={<UserLogin />} /> 
             {/* <Route path="/" element={<AdminRegister />} />  */}
             <Route path="/" element={<HomePage />} />
+            <Route path="/email-list" element={<EmailList />} /> 
+            <Route path="/found-items" element={<FoundItems />} /> 
           </Routes>
         </div>
         <Footer />
