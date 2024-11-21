@@ -11,6 +11,7 @@ import UserRegister from './components/UserRegister';
 import UserLogin from './components/UserLogin';  
 import UserHomePage from './components/UserHomePage';
 import HomePage from './components/HomePage';
+import AdminDashboard from './components/AdminDashboard';
 import theme from './theme';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             <Route path="/user-homepage" element={<UserHomePage />} />
             {/* <Route path="/" element={<AdminRegister />} />  */}
             <Route path="/" element={<HomePage />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Routes>
         </div>
         <Footer />
