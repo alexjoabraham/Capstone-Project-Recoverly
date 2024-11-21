@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, MenuItem, Box, Typography, Grid, InputAdornment, IconButton, Paper } from '@mui/material';
-import { Delete as DeleteIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -18,7 +18,10 @@ const AdminDashboard = () => {
   const [date, setDate] = useState(null);
   const [image, setImage] = useState(null);
   const [imageName, setImageName] = useState('');
+  const [imagePreview, setImagePreview] = useState('');
   const [foundItems, setFoundItems] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [editItemId, setEditItemId] = useState(null);
 
   useEffect(() => {
     fetchFoundItems();
@@ -37,11 +40,13 @@ const AdminDashboard = () => {
     const file = e.target.files[0];
     setImage(file);
     setImageName(file ? file.name : '');
+    setImagePreview(file ? URL.createObjectURL(file) : '');
   };
 
   const handleRemoveFile = () => {
     setImage(null);
     setImageName('');
+    setImagePreview('');
   };
 
   const handleSubmit = async () => {
@@ -56,32 +61,72 @@ const AdminDashboard = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/admin-dashboard', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      toast.success('Found item added successfully!');
-      
-      setFoundItems(response.data.foundItems);
+      if (editMode) {
+        await axios.put(`http://localhost:5000/api/admin-dashboard/${editItemId}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        toast.success('Found item updated successfully!');
+      } else {
+        await axios.post('http://localhost:5000/api/admin-dashboard', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        toast.success('Found item added successfully!');
+      }
 
-      setItemName('');
-      setLocation('');
-      setDescription('');
-      setCategory('');
-      setDate(null);
-      setImage(null);
-      setImageName('');
+      fetchFoundItems();
+      resetForm();
     } catch (error) {
-      console.error('Error adding found item:', error);
-      const errorMessage = error.response?.data?.message || 'Error adding found item';
+      console.error('Error saving found item:', error);
+      const errorMessage = error.response?.data?.message || 'Error saving found item';
       toast.error(errorMessage);
+    }
+  };
+
+  const handleEdit = (item) => {
+    setItemName(item.founditem_name);
+    setLocation(item.founditem_location);
+    setDescription(item.founditem_description);
+    setCategory(item.founditem_category);
+    setDate(new Date(item.founditem_date));
+    setImage(null);
+    setImagePreview(item.founditem_image);
+    setImageName('');
+    setEditMode(true);
+    setEditItemId(item._id);
+  };
+
+  const handleCancel = () => {
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setItemName('');
+    setLocation('');
+    setDescription('');
+    setCategory('');
+    setDate(null);
+    setImage(null);
+    setImageName('');
+    setImagePreview('');
+    setEditMode(false);
+    setEditItemId(null);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/admin-dashboard/${id}`);
+      toast.success('Found item deleted successfully!');
+      fetchFoundItems();
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      toast.error('Error deleting item');
     }
   };
 
   return (
     <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
-      <Typography variant="h5" gutterBottom align="center">Add Found Item</Typography>
-      <Typography variant="body2" align="center" sx={{ mb: 3 }}>
-        Use this form to report found items by entering details such as name, category, location, and date.
+      <Typography variant="h5" gutterBottom align="center">
+        {editMode ? 'Edit Found Item' : 'Add Found Item'}
       </Typography>
 
       <Grid container spacing={2}>
@@ -92,7 +137,6 @@ const AdminDashboard = () => {
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
             margin="normal"
-            sx={{ minHeight: 56 }}
           />
           <TextField
             label="Location"
@@ -100,7 +144,6 @@ const AdminDashboard = () => {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             margin="normal"
-            sx={{ minHeight: 56 }}
           />
           <TextField
             label="Description"
@@ -121,7 +164,6 @@ const AdminDashboard = () => {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             margin="normal"
-            sx={{ minHeight: 56 }}
           >
             {categories.map((option) => (
               <MenuItem key={option} value={option}>
@@ -155,7 +197,6 @@ const AdminDashboard = () => {
               ),
             }}
             margin="normal"
-            sx={{ minHeight: 56 }}
           />
 
           <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -163,7 +204,7 @@ const AdminDashboard = () => {
               label="Date"
               value={date}
               onChange={(newDate) => setDate(newDate)}
-              renderInput={(params) => <TextField {...params} fullWidth margin="normal" sx={{ minHeight: 56 }} />}
+              renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
             />
           </LocalizationProvider>
         </Grid>
@@ -171,20 +212,24 @@ const AdminDashboard = () => {
 
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
         <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Add Item
+          {editMode ? 'Update Item' : 'Add Item'}
         </Button>
+        {editMode && (
+          <Button variant="outlined" color="secondary" onClick={handleCancel} sx={{ ml: 2 }}>
+            Cancel
+          </Button>
+        )}
       </Box>
 
       <ToastContainer />
 
       <Box sx={{ marginTop: 4 }}>
-        <Typography variant="h6" gutterBottom>Found Items List</Typography>
-        <Typography variant="body2" align="center" sx={{ mb: 3 }}>
-            Below is a list of reported found items.
+        <Typography variant="h6" gutterBottom>
+          Found Items List
         </Typography>
-        {foundItems.map((item, index) => (
+        {foundItems.map((item) => (
           <Paper
-            key={index}
+            key={item._id}
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -193,21 +238,31 @@ const AdminDashboard = () => {
               padding: 2,
             }}
           >
-            <Box>
-              <Typography variant="subtitle1">Name: {item.founditem_name}</Typography>
-              <Typography variant="subtitle2">Category: {item.founditem_category}</Typography>
-              <Typography variant="body2">Location: {item.founditem_location}</Typography>
-              <Typography variant="body2">Date: {item.founditem_date ? new Date(item.founditem_date).toLocaleDateString() : ''}</Typography>
-              <Typography variant="body2">Description: {item.founditem_description}</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {item.founditem_image && (
+                <Box
+                  component="img"
+                  src={item.founditem_image}
+                  alt={item.founditem_name}
+                  sx={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 1, marginRight: 2 }}
+                />
+              )}
+              <Box>
+                <Typography variant="subtitle1">Name: {item.founditem_name}</Typography>
+                <Typography variant="subtitle2">Category: {item.founditem_category}</Typography>
+                <Typography variant="body2">Location: {item.founditem_location}</Typography>
+                <Typography variant="body2">Date: {new Date(item.founditem_date).toLocaleDateString()}</Typography>
+                <Typography variant="body2">Description: {item.founditem_description}</Typography>
+              </Box>
             </Box>
-            {item.founditem_image && (
-              <Box
-                component="img"
-                src={item.founditem_image}
-                alt={item.founditem_name}
-                sx={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 1 }}
-              />
-            )}
+            <Box>
+              <IconButton onClick={() => handleEdit(item)}>
+                <EditIcon />
+              </IconButton>
+              <IconButton onClick={() => handleDelete(item._id)}>
+                <DeleteIcon />
+              </IconButton>
+            </Box>
           </Paper>
         ))}
       </Box>

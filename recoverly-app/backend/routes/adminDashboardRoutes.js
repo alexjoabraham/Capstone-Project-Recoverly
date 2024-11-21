@@ -6,9 +6,9 @@ const express = require('express');
 const router = express.Router();
 
 const s3 = new S3Client({
-    region: process.env.AWS_REGION,
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
 
 const upload = multer({
@@ -75,5 +75,61 @@ router.route('/')
       res.status(500).json({ message: error.message || 'Error fetching found items' });
     }
   });
+
+router.put('/:id', (req, res, next) => {
+  upload.single('founditem_image')(req, res, (err) => {
+    if (err) {
+      console.error('Multer upload error:', err);
+      return res.status(400).json({ message: err.message });
+    }
+    next();
+  });
+}, async (req, res) => {
+  try {
+    const { founditem_name, founditem_location, founditem_description, founditem_category, founditem_date } = req.body;
+    const updateData = {
+      founditem_name,
+      founditem_location,
+      founditem_description,
+      founditem_category,
+      founditem_date,
+    };
+    if (req.file) {
+      updateData.founditem_image = req.file.location;
+    }
+
+    const updatedItem = await FoundItem.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    if (!updatedItem) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
+
+    const foundItems = await FoundItem.find();
+    res.status(200).json({ message: 'Found item updated successfully', foundItems });
+  } catch (error) {
+    console.error('Error updating found item:', error);
+    res.status(400).json({ message: error.message || 'Error updating found item' });
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id || id.length !== 24) {
+      return res.status(400).json({ message: 'Invalid item ID' });
+    }
+
+    const deletedItem = await FoundItem.findByIdAndDelete(id);
+    if (!deletedItem) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
+
+    const foundItems = await FoundItem.find();
+    res.status(200).json({ message: 'Found item deleted successfully', foundItems });
+  } catch (error) {
+    console.error('Error deleting found item:', error);
+    res.status(400).json({ message: error.message || 'Error deleting found item' });
+  }
+});
 
 module.exports = router;
