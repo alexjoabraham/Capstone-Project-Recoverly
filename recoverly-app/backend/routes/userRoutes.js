@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Admin = require('../models/Admin')
+const FoundItem = require('../models/FoundItem');
 
 router.post('/register', async (req, res) => {
   const { user_name, user_email, user_phone, user_password } = req.body;
@@ -40,17 +41,26 @@ router.post('/validate-organization', async (req, res) => {
   const { organization_name, organization_securecode } = req.body;
   try {
     const admin = await Admin.findOne({ 
-      organization_name: organization_name, 
-      organization_securecode: organization_securecode 
+      organization_name, 
+      organization_securecode 
     });
 
     if (admin) {
-      return res.status(200).json({ message: 'Validation successful' });
+      return res.status(200).json({ success: true, message: 'Validation successful' });
     } else {
-      return res.status(401).json({ message: 'Invalid organization name or secure code' });
+      return res.status(401).json({ success: false, message: 'Invalid organization name or secure code' });
     }
   } catch (error) {
-    return res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+router.get('/found-items', async (req, res) => {
+  try {
+      const foundItems = await FoundItem.find();
+      res.status(200).json(foundItems);
+  } catch (error) {
+      res.status(500).json({ message: 'Error fetching found items' });
   }
 });
 

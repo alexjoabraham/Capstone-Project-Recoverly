@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Container, Box, Typography, TextField, Button, Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@mui/material';
 
 const UserHomePage = () => {
+    const navigate = useNavigate();
     const [organizationName, setOrganizationName] = useState('');
     const [secureCode, setSecureCode] = useState('');
     const [message, setMessage] = useState('');
@@ -14,6 +16,9 @@ const UserHomePage = () => {
             organization_securecode: secureCode,
         });
         setMessage(response.data.message);
+        if (response.data.success) { 
+          navigate('/claim-items');
+      }
         } catch (error) {
         setMessage(error.response?.data?.message || 'Error validating organization');
         }
