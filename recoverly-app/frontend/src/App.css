@@ -125,3 +125,8 @@ button:hover {
     transform: rotate(360deg);
   }
 }
+
+.css-s94iub-MuiInputBase-root-MuiOutlinedInput-root{
+  width: 360px;
+  margin-top: 15px;
+}
