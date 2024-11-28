@@ -106,7 +106,7 @@ const HomePage = () => {
         </TextContainer>
       </BackgroundBox>
 
-      <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
+      <Dialog open={openModal} onClose={handleCloseModal}>
         <DialogTitle align="center">Select Your Role</DialogTitle>
         <StyledDialogContent>
           <Typography variant="body1" align="center" sx={{ mb: 2 }}>

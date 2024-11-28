@@ -1,55 +1,39 @@
 import React, { useState } from 'react';
 import { Box, Container, Typography, Button, TextField } from '@mui/material';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
 const PaymentPage = () => {
-  const [donationAmount, setDonationAmount] = useState(5); // Default amount is $5
-  const [donorName, setDonorName] = useState(''); // For donor name
-  const [donorEmail, setDonorEmail] = useState(''); // For donor email
-  const [emailError, setEmailError] = useState(''); // For email error
+  const [donationAmount, setDonationAmount] = useState(5);
+  const [donorName, setDonorName] = useState('');
+  const [donorEmail, setDonorEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const navigate = useNavigate();
 
-  const handleDonationChange = (event) => {
-    setDonationAmount(event.target.value);
-  };
-
-  const handleNameChange = (event) => {
-    setDonorName(event.target.value);
-  };
-
-  const handleEmailChange = (event) => {
-    setDonorEmail(event.target.value);
-  };
-
-  // Email validation function
   const validateEmail = (email) => {
-    // Regular expression for validating email format
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return regex.test(email);
   };
 
   const handleDonate = () => {
-    // Validate donation amount
     if (isNaN(donationAmount) || donationAmount <= 0) {
-      alert("Please enter a valid donation amount.");
-    } 
-    // Validate name and email
-    else if (!donorName || !donorEmail) {
-      alert("Please enter your name and email.");
-    } 
-    else if (!validateEmail(donorEmail)) {
+      toast.error("Please enter a valid donation amount.");
+    } else if (!donorName || !donorEmail) {
+      toast.error("Please enter your name and email.");
+    } else if (!validateEmail(donorEmail)) {
       setEmailError("Please enter a valid email address.");
-    } 
-    else {
-      setEmailError(""); // Clear the email error if valid
+      toast.error("Please enter a valid email address.");
+    } else {
+      setEmailError("");
+      toast.success("Donation amount confirmed. Proceed with PayPal.");
     }
   };
 
   return (
     <PayPalScriptProvider options={{ "client-id": "AUDrgmEcFQJDCsEiPeisH62wffZctSTh9YDvD8e6DzhgcSfEn68nQEAVmn3mn8Ipo3YGTfqbR5zoEL6f" }}>
       <Container maxWidth="xl" sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        {/* Center the content of the page */}
         <Box
           sx={{
             display: 'flex',
@@ -57,8 +41,8 @@ const PaymentPage = () => {
             justifyContent: 'center',
             alignItems: 'center',
             textAlign: 'center',
-            flex: 1, // Ensures the content section takes available space
-            backgroundColor: '#f5f5f5', // Optional background color
+            flex: 1,
+            backgroundColor: '#f5f5f5',
             py: 4,
           }}
         >
@@ -68,70 +52,58 @@ const PaymentPage = () => {
           <Typography variant="h6" gutterBottom>
             Your contribution helps us improve our platform for lost and found items.
           </Typography>
-          
-          {/* Donor Name */}
           <TextField
             label="Your Name"
             value={donorName}
-            onChange={handleNameChange}
+            onChange={(e) => setDonorName(e.target.value)}
             sx={{ width: 300, mb: 2 }}
           />
-          
-          {/* Donor Email with error message */}
           <TextField
             label="Your Email"
             type="email"
             value={donorEmail}
-            onChange={handleEmailChange}
+            onChange={(e) => setDonorEmail(e.target.value)}
             sx={{ width: 300, mb: 2 }}
             error={!!emailError}
             helperText={emailError}
           />
-          
-          {/* Donation Amount */}
           <TextField
             label="Enter Donation Amount"
             type="number"
             value={donationAmount}
-            onChange={handleDonationChange}
+            onChange={(e) => setDonationAmount(e.target.value)}
             sx={{ width: 200, mb: 2 }}
             inputProps={{ min: "1", step: "1" }}
           />
-          
           <Button variant="contained" color="primary" onClick={handleDonate} sx={{ mt: 2 }}>
             Confirm Donation Amount
           </Button>
-
           <Box sx={{ mt: 4, width: '100%', display: 'flex', justifyContent: 'center' }}>
-            {/* PayPal Button */}
             <PayPalButtons
-              key={donationAmount} // Force re-render by using donationAmount as the key
+              key={donationAmount}
               style={{ layout: 'vertical' }}
               createOrder={(data, actions) => {
                 return actions.order.create({
-                  purchase_units: [{
-                    amount: {
-                      value: donationAmount.toString() // Donation amount is dynamic
-                    }
-                  }]
+                  purchase_units: [{ amount: { value: donationAmount.toString() } }]
                 });
               }}
               onApprove={(data, actions) => {
                 return actions.order.capture().then((details) => {
-                  alert(`Donation successful, thank you ${details.payer.name.given_name}!`);
+                  toast.success(`Donation successful, thank you ${details.payer.name.given_name}!`);
+                  navigate('/thank-you'); // Navigate to a thank-you page
                 });
               }}
               onCancel={() => {
-                alert('Donation cancelled');
+                toast.info('Donation cancelled.');
               }}
               onError={(err) => {
                 console.error(err);
-                alert('Something went wrong with the donation');
+                toast.error('Something went wrong with the donation.');
               }}
             />
           </Box>
         </Box>
-       
+        <ToastContainer />
       </Container>
     </PayPalScriptProvider>
   );
