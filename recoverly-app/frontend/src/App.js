@@ -13,6 +13,7 @@ import UserHomePage from './components/UserHomePage';
 import HomePage from './components/HomePage';
 import AdminDashboard from './components/AdminDashboard';
 import ClaimItemsPage from './components/ClaimItemsPage';
+import UserClaimRequest from './components/UserClaimRequest';
 import theme from './theme';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Route path="/user-login" element={<UserLogin />} /> 
             <Route path="/user-homepage" element={<UserHomePage />} />
             <Route path="/claim-items" element={<ClaimItemsPage />} />
+            <Route path="/claim-request/:id" element={<UserClaimRequest />} />
             {/* <Route path="/" element={<AdminRegister />} />  */}
             <Route path="/" element={<HomePage />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Container, Card, CardContent, CardActions, Button, Typography, Grid } from '@mui/material';
 
 const ClaimItemsPage = () => {
     const [foundItems, setFoundItems] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchFoundItems = async () => {
@@ -20,6 +22,7 @@ const ClaimItemsPage = () => {
 
     const handleClaim = (itemId) => {
         // console.log(`Claiming item with ID: ${itemId}`);
+        navigate(`/claim-request/${itemId}`); 
     };
 
     return (
