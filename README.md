@@ -4,7 +4,7 @@ Alex Jo Abraham - alexjoabraham2@gmail.com
 
 Alitta Varghese Parayil - alitta.parayil.ca@gmail.com
 
-Rincy Ann Varghese - rincyannjoseph@gmail.com
+Rincy Ann Joseph - rincyannjoseph@gmail.com
 
 Supervisor:
 
