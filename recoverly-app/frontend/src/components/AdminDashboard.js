@@ -20,6 +20,8 @@ const AdminDashboard = () => {
   const [imageName, setImageName] = useState('');
   const [imagePreview, setImagePreview] = useState('');
   const [foundItems, setFoundItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [searchText, setSearchText] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [editItemId, setEditItemId] = useState(null);
 
@@ -31,6 +33,7 @@ const AdminDashboard = () => {
     try {
       const response = await axios.get('http://localhost:5000/api/admin-dashboard');
       setFoundItems(response.data);
+      setFilteredItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);
     }
@@ -123,6 +126,14 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleSearch = () => {
+    const filtered = foundItems.filter((item) => {
+      const searchFields = `${item.founditem_name} ${item.founditem_location} ${item.founditem_description} ${item.founditem_category}`.toLowerCase();
+      return searchFields.includes(searchText.toLowerCase());
+    });
+    setFilteredItems(filtered);
+  };
+
   return (
     <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
       <Typography variant="h5" gutterBottom align="center">
@@ -201,6 +212,7 @@ const AdminDashboard = () => {
 
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
+              style="width:360px;margin-top:15px"
               label="Date"
               value={date}
               onChange={(newDate) => setDate(newDate)}
@@ -227,7 +239,22 @@ const AdminDashboard = () => {
         <Typography variant="h6" gutterBottom>
           Found Items List
         </Typography>
-        {foundItems.map((item) => (
+
+        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+          <TextField
+            label="Search"
+            variant="outlined"
+            fullWidth
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            sx={{ marginRight: 2 }}
+          />
+          <Button variant="contained" color="primary" onClick={handleSearch}>
+            Search
+          </Button>
+        </Box>
+
+        {filteredItems.map((item) => (
           <Paper
             key={item._id}
             sx={{

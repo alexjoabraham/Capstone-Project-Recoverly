@@ -12,6 +12,7 @@ import UserLogin from './components/UserLogin';
 import UserHomePage from './components/UserHomePage';
 import HomePage from './components/HomePage';
 import AdminDashboard from './components/AdminDashboard';
+import AdminLostItem from './components/AdminLostItem';
 import ClaimItemsPage from './components/ClaimItemsPage';
 import UserClaimRequest from './components/UserClaimRequest';
 import theme from './theme';
@@ -34,6 +35,7 @@ function App() {
             {/* <Route path="/" element={<AdminRegister />} />  */}
             <Route path="/" element={<HomePage />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/admin-lost-items" element={<AdminLostItem />} />
           </Routes>
         </div>
         <Footer />
