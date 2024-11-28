@@ -4,7 +4,9 @@ const cors = require('cors');
 const connectDB = require('./config/db'); 
 const userRoutes = require('./routes/userRoutes'); 
 const adminRoutes = require('./routes/adminRoutes'); 
-const lostItemRoutes = require('./routes/lostItemRoutes'); 
+const lostItemRoutes = require('./routes/lostItemRoutes');
+const adminDashboardRoutes = require('./routes/adminDashboardRoutes');
+const adminLostItemRoutes = require('./routes/adminLostItemRoutes'); 
 
 dotenv.config();
 
@@ -20,6 +22,8 @@ connectDB();
 app.use('/api/users', userRoutes);  
 app.use('/api/admins', adminRoutes);  
 app.use('/api/lost-items', lostItemRoutes); 
+app.use('/api/admin-dashboard', adminDashboardRoutes);
+app.use('/api/admin-lost-items', adminLostItemRoutes);
 
 app.get('/', (req, res) => {
   res.send('API is running...');

@@ -7,14 +7,18 @@ const Navbar = () => {
     <AppBar position="static">
       <Toolbar>  
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        <img 
-          src="/images/Logo_Recoverly.png" 
-          alt="Logo" 
-          style={{ height: '40px', marginRight: '16px'} } 
-        />
+          <Link to="/">
+            <img 
+              src="/images/Logo_Recoverly.png" 
+              alt="Logo" 
+              style={{ height: '40px', marginRight: '16px', cursor: 'pointer' }} 
+            />
+          </Link>
         </Typography>
         <Button color="inherit" component={Link} to="/">Home</Button>
         <Button color="inherit" component={Link} to="/report-lost-item">Report Lost Item</Button>
+        <Button color="inherit" component={Link} to="/admin-dashboard">Admin Dashboard</Button>
+        <Button color="inherit" component={Link} to="/admin-lost-items">Admin Lost Items</Button>
       </Toolbar>
     </AppBar>
   );

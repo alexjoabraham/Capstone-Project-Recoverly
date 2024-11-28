@@ -71,6 +71,10 @@ const HomePage = () => {
     setOpenModal(false);
   };
 
+  const handleDonate = () => {
+    navigate('/payment'); // Navigate to PaymentPage for donation
+  };
+
   return (
     <Container maxWidth="xl">
       <BackgroundBox>
@@ -102,7 +106,7 @@ const HomePage = () => {
         </TextContainer>
       </BackgroundBox>
 
-      <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
+      <Dialog open={openModal} onClose={handleCloseModal}>
         <DialogTitle align="center">Select Your Role</DialogTitle>
         <StyledDialogContent>
           <Typography variant="body1" align="center" sx={{ mb: 2 }}>
@@ -175,6 +179,24 @@ const HomePage = () => {
         )}
         <Button variant="contained" color="primary" onClick={handleLearnMore}>
           {showMore ? 'Show Less' : 'Show More'}
+        </Button>
+      </Box>
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h4">Support Recoverly</Typography>
+          <Button
+            variant="contained"
+            sx={{
+              mt: 2,
+              backgroundColor: '#ca7802', // Same color as the Get Started button
+              color: 'white',
+              '&:hover': {
+                backgroundColor: '#e5decc', // Hover effect
+                color: 'black',
+              },
+            }}
+            onClick={handleDonate}
+          >
+          Donate with PayPal
         </Button>
       </Box>
     </Container>

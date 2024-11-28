@@ -7,7 +7,7 @@ const foundItemSchema = new mongoose.Schema({
   founditem_location: { type: String, required: true },
   founditem_description: { type: String, required: true },
   founditem_image: { type: String }, 
-  admin_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
+  admin_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
 }, {
   timestamps: true
 });

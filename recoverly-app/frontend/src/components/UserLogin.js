@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Container, TextField, Button, Typography } from '@mui/material';
 
 const validationSchema = Yup.object({
@@ -13,6 +13,8 @@ const validationSchema = Yup.object({
 });
 
 const UserLogin = () => {
+  const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       user_email: '',
@@ -23,6 +25,7 @@ const UserLogin = () => {
       try {
         const response = await axios.post('http://localhost:5000/api/users/login', values);
         toast.success('User logged in successfully!');
+        navigate('/user-homepage'); 
       } catch (error) {
         toast.error('Error logging in user: ' + error.response.data.message);
       }

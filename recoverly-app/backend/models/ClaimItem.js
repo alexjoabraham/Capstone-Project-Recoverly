@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const claimItemSchema = new mongoose.Schema({
-  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  founditem_id: { type: mongoose.Schema.Types.ObjectId, ref: 'FoundItem', required: true },
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  founditem_id: { type: mongoose.Schema.Types.ObjectId, ref: 'FoundItem' },
   claim_image: { type: String },
   userclaim_description: { type: String, required: true },
   claimapproved: { type: Boolean, default: false },

@@ -1,0 +1,300 @@
+import React, { useState, useEffect } from 'react';
+import { TextField, Button, MenuItem, Box, Typography, Grid, InputAdornment, IconButton, Paper } from '@mui/material';
+import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const categories = ['Electronics', 'Clothing', 'Accessories', 'Documents', 'Others'];
+
+const AdminDashboard = () => {
+  const [itemName, setItemName] = useState('');
+  const [location, setLocation] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState('');
+  const [date, setDate] = useState(null);
+  const [image, setImage] = useState(null);
+  const [imageName, setImageName] = useState('');
+  const [imagePreview, setImagePreview] = useState('');
+  const [foundItems, setFoundItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [editMode, setEditMode] = useState(false);
+  const [editItemId, setEditItemId] = useState(null);
+
+  useEffect(() => {
+    fetchFoundItems();
+  }, []);
+
+  const fetchFoundItems = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/admin-dashboard');
+      setFoundItems(response.data);
+      setFilteredItems(response.data);
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    setImageName(file ? file.name : '');
+    setImagePreview(file ? URL.createObjectURL(file) : '');
+  };
+
+  const handleRemoveFile = () => {
+    setImage(null);
+    setImageName('');
+    setImagePreview('');
+  };
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('founditem_name', itemName);
+    formData.append('founditem_location', location);
+    formData.append('founditem_description', description);
+    formData.append('founditem_category', category);
+    formData.append('founditem_date', date);
+    if (image) {
+      formData.append('founditem_image', image);
+    }
+
+    try {
+      if (editMode) {
+        await axios.put(`http://localhost:5000/api/admin-dashboard/${editItemId}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        toast.success('Found item updated successfully!');
+      } else {
+        await axios.post('http://localhost:5000/api/admin-dashboard', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        toast.success('Found item added successfully!');
+      }
+
+      fetchFoundItems();
+      resetForm();
+    } catch (error) {
+      console.error('Error saving found item:', error);
+      const errorMessage = error.response?.data?.message || 'Error saving found item';
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleEdit = (item) => {
+    setItemName(item.founditem_name);
+    setLocation(item.founditem_location);
+    setDescription(item.founditem_description);
+    setCategory(item.founditem_category);
+    setDate(new Date(item.founditem_date));
+    setImage(null);
+    setImagePreview(item.founditem_image);
+    setImageName('');
+    setEditMode(true);
+    setEditItemId(item._id);
+  };
+
+  const handleCancel = () => {
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setItemName('');
+    setLocation('');
+    setDescription('');
+    setCategory('');
+    setDate(null);
+    setImage(null);
+    setImageName('');
+    setImagePreview('');
+    setEditMode(false);
+    setEditItemId(null);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/admin-dashboard/${id}`);
+      toast.success('Found item deleted successfully!');
+      fetchFoundItems();
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      toast.error('Error deleting item');
+    }
+  };
+
+  const handleSearch = () => {
+    const filtered = foundItems.filter((item) => {
+      const searchFields = `${item.founditem_name} ${item.founditem_location} ${item.founditem_description} ${item.founditem_category}`.toLowerCase();
+      return searchFields.includes(searchText.toLowerCase());
+    });
+    setFilteredItems(filtered);
+  };
+
+  return (
+    <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
+      <Typography variant="h5" gutterBottom align="center">
+        {editMode ? 'Edit Found Item' : 'Add Found Item'}
+      </Typography>
+
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <TextField
+            label="Name"
+            fullWidth
+            value={itemName}
+            onChange={(e) => setItemName(e.target.value)}
+            margin="normal"
+          />
+          <TextField
+            label="Location"
+            fullWidth
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            margin="normal"
+          />
+          <TextField
+            label="Description"
+            fullWidth
+            multiline
+            rows={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            margin="normal"
+          />
+        </Grid>
+
+        <Grid item xs={6}>
+          <TextField
+            label="Category"
+            select
+            fullWidth
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            margin="normal"
+          >
+            {categories.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <TextField
+            label="Image"
+            fullWidth
+            value={imageName}
+            InputProps={{
+              readOnly: true,
+              endAdornment: (
+                <>
+                  <InputAdornment position="end">
+                    <Button variant="contained" component="label">
+                      Choose File
+                      <input type="file" hidden onChange={handleFileChange} />
+                    </Button>
+                  </InputAdornment>
+                  {image && (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleRemoveFile}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  )}
+                </>
+              ),
+            }}
+            margin="normal"
+          />
+
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              style="width:360px;margin-top:15px"
+              label="Date"
+              value={date}
+              onChange={(newDate) => setDate(newDate)}
+              renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+            />
+          </LocalizationProvider>
+        </Grid>
+      </Grid>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
+          {editMode ? 'Update Item' : 'Add Item'}
+        </Button>
+        {editMode && (
+          <Button variant="outlined" color="secondary" onClick={handleCancel} sx={{ ml: 2 }}>
+            Cancel
+          </Button>
+        )}
+      </Box>
+
+      <ToastContainer />
+
+      <Box sx={{ marginTop: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          Found Items List
+        </Typography>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+          <TextField
+            label="Search"
+            variant="outlined"
+            fullWidth
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            sx={{ marginRight: 2 }}
+          />
+          <Button variant="contained" color="primary" onClick={handleSearch}>
+            Search
+          </Button>
+        </Box>
+
+        {filteredItems.map((item) => (
+          <Paper
+            key={item._id}
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: 2,
+              padding: 2,
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {item.founditem_image && (
+                <Box
+                  component="img"
+                  src={item.founditem_image}
+                  alt={item.founditem_name}
+                  sx={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 1, marginRight: 2 }}
+                />
+              )}
+              <Box>
+                <Typography variant="subtitle1">Name: {item.founditem_name}</Typography>
+                <Typography variant="subtitle2">Category: {item.founditem_category}</Typography>
+                <Typography variant="body2">Location: {item.founditem_location}</Typography>
+                <Typography variant="body2">Date: {new Date(item.founditem_date).toLocaleDateString()}</Typography>
+                <Typography variant="body2">Description: {item.founditem_description}</Typography>
+              </Box>
+            </Box>
+            <Box>
+              <IconButton onClick={() => handleEdit(item)}>
+                <EditIcon />
+              </IconButton>
+              <IconButton onClick={() => handleDelete(item._id)}>
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          </Paper>
+        ))}
+      </Box>
+    </Box>
+  );
+};
+
+export default AdminDashboard;
