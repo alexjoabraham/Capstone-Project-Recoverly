@@ -6,7 +6,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const UserClaimRequest = () => {
-    const { itemId } = useParams(); 
+    const { id } = useParams(); 
+    console.log("Retrieved id:", id);
     const [userDetails, setUserDetails] = useState({});
     const [claimDescription, setClaimDescription] = useState('');
     const [claimImage, setClaimImage] = useState(null);
@@ -46,9 +47,11 @@ const UserClaimRequest = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
       
+        console.log("Item ID:", id); 
+
         const formData = new FormData();
         formData.append('user_id', userDetails._id);
-        formData.append('founditem_id', itemId);
+        formData.append('founditem_id', id);
         formData.append('claim_image', claimImage);
         formData.append('userclaim_description', claimDescription);
       
