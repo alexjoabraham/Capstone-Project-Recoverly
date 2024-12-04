@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
+import apiClient from '../api/apiClient'; // Use centralized Axios setup
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate } from 'react-router-dom';
@@ -23,11 +23,16 @@ const UserLogin = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await axios.post('http://localhost:5000/api/users/login', values);
+        const response = await apiClient.post('/users/login', values);
+
+        // Save JWT token to local storage
+        const { token } = response.data;
+        localStorage.setItem('token', token);
+
         toast.success('User logged in successfully!');
-        navigate('/user-homepage'); 
+        navigate('/user-homepage'); // Redirect to user homepage
       } catch (error) {
-        toast.error('Error logging in user: ' + error.response.data.message);
+        toast.error('Error logging in user: ' + (error.response?.data?.message || 'Server error'));
       }
     },
   });

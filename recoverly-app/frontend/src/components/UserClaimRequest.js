@@ -12,7 +12,13 @@ const UserClaimRequest = () => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/users/user-details');
+                const token = localStorage.getItem('token');
+                // const response = await axios.get('http://localhost:5000/api/users/user-details');
+                const response = await axios.get('http://localhost:5000/api/users/user-details', {
+                    headers: {
+                        Authorization: `Bearer ${token}`  // Include the token in the request header
+                    }
+                });
                 setUserDetails(response.data);
             } catch (error) {
                 console.error('Error fetching user details:', error);

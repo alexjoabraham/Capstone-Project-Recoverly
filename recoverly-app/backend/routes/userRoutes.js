@@ -7,7 +7,8 @@ const multerS3 = require('multer-s3');
 const multer = require('multer');
 const ClaimItem = require('../models/ClaimItem');
 const FoundItem = require('../models/FoundItem');
-// const authenticateUser = require('../middleware/authenticateUser'); 
+const jwt = require('jsonwebtoken');
+const authenticateUser = require('../middleware/authenticateUser')
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -91,7 +92,9 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    res.status(200).json({ message: 'User logged in successfully', user });
+    // res.status(200).json({ message: 'User logged in successfully', user });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(200).json({ message: 'User logged in successfully', token });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -125,12 +128,9 @@ router.get('/found-items', async (req, res) => {
   }
 });
 
-router.get('/user-details', async (req, res) => {
+router.get('/user-details', authenticateUser, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+    const user = req.user; // Extracted from middleware
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
