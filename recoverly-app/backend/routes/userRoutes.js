@@ -39,23 +39,16 @@ const uploadClaimItem = multer({
   },
 });
 
-router.post('/claim-item', (req, res, next) => {
-  uploadClaimItem.single('claimitem_image')(req, res, function (err) {
-    if (err) {
-      return res.status(400).json({ message: err.message });
-    }
-    next();
-  });
-}, async (req, res) => {
+router.post('/claim-item', uploadClaimItem.single('claim_image'), async (req, res) => {
   try {
-    const { claimitem_name, claimitem_reason, claimitem_date } = req.body;
+    const { user_id, founditem_id, userclaim_description } = req.body;
     const imageUrl = req.file ? req.file.location : null;
 
     const newClaimItem = new ClaimItem({
-      claimitem_name,
-      claimitem_reason,
-      claimitem_date,
-      claimitem_image: imageUrl,
+      user_id,
+      founditem_id,
+      claim_image: imageUrl,
+      userclaim_description,
     });
 
     await newClaimItem.save();

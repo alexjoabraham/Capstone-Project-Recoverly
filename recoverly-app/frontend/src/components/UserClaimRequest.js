@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom'; 
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UserClaimRequest = () => {
     const { itemId } = useParams(); 
@@ -13,7 +15,6 @@ const UserClaimRequest = () => {
         const fetchUserDetails = async () => {
             try {
                 const token = localStorage.getItem('token');
-                // const response = await axios.get('http://localhost:5000/api/users/user-details');
                 const response = await axios.get('http://localhost:5000/api/users/user-details', {
                     headers: {
                         Authorization: `Bearer ${token}`  // Include the token in the request header
@@ -22,6 +23,7 @@ const UserClaimRequest = () => {
                 setUserDetails(response.data);
             } catch (error) {
                 console.error('Error fetching user details:', error);
+                toast.error('Failed to fetch user details.');
             }
         };
 
@@ -29,25 +31,35 @@ const UserClaimRequest = () => {
     }, []);
 
     const handleImageChange = (event) => {
-        setClaimImage(event.target.files[0]);
+        const file = event.target.files[0];
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      
+        if (file && allowedTypes.includes(file.type)) {
+            setClaimImage(file);
+            toast.success('Image selected successfully!');
+        } else {
+            toast.error('Only JPEG, JPG, PNG, or WEBP formats are allowed!');
+            setClaimImage(null);
+        }
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+      
         const formData = new FormData();
         formData.append('user_id', userDetails._id);
         formData.append('founditem_id', itemId);
         formData.append('claim_image', claimImage);
         formData.append('userclaim_description', claimDescription);
-
+      
         try {
-            await axios.post('http://localhost:5000/api/claims', formData, {
+            await axios.post('http://localhost:5000/api/users/claim-item', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            alert('Claim request submitted successfully!');
+            toast.success('Claim request submitted successfully!');
         } catch (error) {
             console.error('Error submitting claim request:', error);
+            toast.error(error.response?.data?.message || 'Error submitting claim');
         }
     };
 
@@ -102,6 +114,7 @@ const UserClaimRequest = () => {
                     Submit
                 </Button>
             </form>
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
         </Container>
     );
 };
