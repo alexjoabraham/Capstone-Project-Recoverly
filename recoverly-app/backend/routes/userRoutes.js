@@ -7,7 +7,8 @@ const multerS3 = require('multer-s3');
 const multer = require('multer');
 const ClaimItem = require('../models/ClaimItem');
 const FoundItem = require('../models/FoundItem');
-// const authenticateUser = require('../middleware/authenticateUser'); 
+const jwt = require('jsonwebtoken');
+const authenticateUser = require('../middleware/authenticateUser')
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -38,23 +39,16 @@ const uploadClaimItem = multer({
   },
 });
 
-router.post('/claim-item', (req, res, next) => {
-  uploadClaimItem.single('claimitem_image')(req, res, function (err) {
-    if (err) {
-      return res.status(400).json({ message: err.message });
-    }
-    next();
-  });
-}, async (req, res) => {
+router.post('/claim-item', uploadClaimItem.single('claim_image'), async (req, res) => {
   try {
-    const { claimitem_name, claimitem_reason, claimitem_date } = req.body;
+    const { user_id, founditem_id, userclaim_description } = req.body;
     const imageUrl = req.file ? req.file.location : null;
 
     const newClaimItem = new ClaimItem({
-      claimitem_name,
-      claimitem_reason,
-      claimitem_date,
-      claimitem_image: imageUrl,
+      user_id,
+      founditem_id,
+      claim_image: imageUrl,
+      userclaim_description,
     });
 
     await newClaimItem.save();
@@ -91,7 +85,9 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    res.status(200).json({ message: 'User logged in successfully', user });
+    // res.status(200).json({ message: 'User logged in successfully', user });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(200).json({ message: 'User logged in successfully', token });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -125,15 +121,37 @@ router.get('/found-items', async (req, res) => {
   }
 });
 
-router.get('/user-details', async (req, res) => {
+router.get('/found-item/:id', async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    const foundItem = await FoundItem.findById(req.params.id);
+    if (!foundItem) {
+      return res.status(404).json({ message: 'Found item not found' });
     }
+    res.status(200).json(foundItem);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching found item' });
+  }
+});
+
+router.get('/user-details', authenticateUser, async (req, res) => {
+  try {
+    const user = req.user;
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.get('/organizations', async (req, res) => {
+  try {
+      const admins = await Admin.find({}, 'organization_name');
+      const organizationNames = admins.map(admin => ({
+          _id: admin._id,
+          organization_name: admin.organization_name
+      }));
+      res.json(organizationNames);
+  } catch (error) {
+      res.status(500).json({ message: 'Error fetching organizations' });
   }
 });
 

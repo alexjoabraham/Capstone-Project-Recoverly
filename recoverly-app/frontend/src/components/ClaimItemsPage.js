@@ -21,7 +21,7 @@ const ClaimItemsPage = () => {
     }, []);
 
     const handleClaim = (itemId) => {
-        // console.log(`Claiming item with ID: ${itemId}`);
+        console.log(`Claiming item with ID: ${itemId}`);
         navigate(`/claim-request/${itemId}`); 
     };
 
