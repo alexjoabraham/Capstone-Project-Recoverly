@@ -121,6 +121,18 @@ router.get('/found-items', async (req, res) => {
   }
 });
 
+router.get('/found-item/:id', async (req, res) => {
+  try {
+    const foundItem = await FoundItem.findById(req.params.id);
+    if (!foundItem) {
+      return res.status(404).json({ message: 'Found item not found' });
+    }
+    res.status(200).json(foundItem);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching found item' });
+  }
+});
+
 router.get('/user-details', authenticateUser, async (req, res) => {
   try {
     const user = req.user; // Extracted from middleware

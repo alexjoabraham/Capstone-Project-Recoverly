@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom'; 
-import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, Card, CardContent, CardMedia } from '@mui/material';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -9,6 +9,7 @@ const UserClaimRequest = () => {
     const { id } = useParams(); 
     console.log("Retrieved id:", id);
     const [userDetails, setUserDetails] = useState({});
+    const [foundItem, setFoundItem] = useState(null); // State for found item details
     const [claimDescription, setClaimDescription] = useState('');
     const [claimImage, setClaimImage] = useState(null);
 
@@ -17,9 +18,7 @@ const UserClaimRequest = () => {
             try {
                 const token = localStorage.getItem('token');
                 const response = await axios.get('http://localhost:5000/api/users/user-details', {
-                    headers: {
-                        Authorization: `Bearer ${token}`  // Include the token in the request header
-                    }
+                    headers: { Authorization: `Bearer ${token}` }
                 });
                 setUserDetails(response.data);
             } catch (error) {
@@ -28,13 +27,24 @@ const UserClaimRequest = () => {
             }
         };
 
+        const fetchFoundItem = async () => {
+            try {
+                // const response = await axios.get(`http://localhost:5000/api/users/items/${id}`);
+                const response = await axios.get(`http://localhost:5000/api/users/found-item/${id}`);
+                setFoundItem(response.data);  // Set found item details in state
+            } catch (error) {
+                console.error('Error fetching found item:', error);
+                toast.error('Failed to fetch found item.');
+            }
+        };
+
         fetchUserDetails();
-    }, []);
+        fetchFoundItem();
+    }, [id]);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-      
         if (file && allowedTypes.includes(file.type)) {
             setClaimImage(file);
             toast.success('Image selected successfully!');
@@ -46,7 +56,7 @@ const UserClaimRequest = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-      
+
         console.log("Item ID:", id); 
 
         const formData = new FormData();
@@ -54,7 +64,7 @@ const UserClaimRequest = () => {
         formData.append('founditem_id', id);
         formData.append('claim_image', claimImage);
         formData.append('userclaim_description', claimDescription);
-      
+
         try {
             await axios.post('http://localhost:5000/api/users/claim-item', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
@@ -66,11 +76,29 @@ const UserClaimRequest = () => {
         }
     };
 
+    const formatDate = (date) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(date).toLocaleDateString('en-US', options);
+    };
+
     return (
         <Container maxWidth="sm" sx={{ marginTop: 4 }}>
             <Typography variant="h5" gutterBottom>
                 Claim Request
             </Typography>
+            
+            {foundItem && (
+            <Card sx={{ marginBottom: 4 }}>
+            <CardContent>
+                <Typography variant="h6">{foundItem.founditem_name}</Typography>
+                <Typography variant="body2" color="textSecondary">Category: {foundItem.founditem_category}</Typography>
+                <Typography variant="body2" color="textSecondary">Date Found: {formatDate(foundItem.founditem_date)}</Typography>
+                <Typography variant="body2" color="textSecondary">Location: {foundItem.founditem_location}</Typography>
+                <Typography variant="body2" color="textSecondary">{foundItem.founditem_description}</Typography>
+            </CardContent>
+        </Card>
+            )}
+
             <form onSubmit={handleSubmit}>
                 <Box sx={{ marginBottom: 2 }}>
                     <TextField
