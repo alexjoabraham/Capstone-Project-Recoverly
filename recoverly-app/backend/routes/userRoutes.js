@@ -135,10 +135,23 @@ router.get('/found-item/:id', async (req, res) => {
 
 router.get('/user-details', authenticateUser, async (req, res) => {
   try {
-    const user = req.user; // Extracted from middleware
+    const user = req.user;
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.get('/organizations', async (req, res) => {
+  try {
+      const admins = await Admin.find({}, 'organization_name');
+      const organizationNames = admins.map(admin => ({
+          _id: admin._id,
+          organization_name: admin.organization_name
+      }));
+      res.json(organizationNames);
+  } catch (error) {
+      res.status(500).json({ message: 'Error fetching organizations' });
   }
 });
 

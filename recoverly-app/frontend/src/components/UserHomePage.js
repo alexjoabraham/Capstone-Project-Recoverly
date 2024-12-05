@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Container, Box, Typography, TextField, Button, Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@mui/material';
+import { Container, Box, Typography, TextField, Button, Select, MenuItem, InputLabel, FormControl, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 
 const UserHomePage = () => {
     const navigate = useNavigate();
     const [organizationName, setOrganizationName] = useState('');
     const [secureCode, setSecureCode] = useState('');
     const [message, setMessage] = useState('');
+    const [organizations, setOrganizations] = useState([]);
+
+    useEffect(() => {
+        const fetchOrganizations = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/api/users/organizations');
+                setOrganizations(response.data);
+            } catch (error) {
+                setMessage('Error fetching organizations');
+            }
+        };
+
+        fetchOrganizations();
+    }, []);
 
     const handleValidation = async () => {
         try {
@@ -25,8 +39,8 @@ const UserHomePage = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('token'); // Remove the token from localStorage
-        navigate('/user-login'); // Navigate to the user login page
+        localStorage.removeItem('token');
+        navigate('/user-login');
     };
 
     return (
@@ -47,13 +61,21 @@ const UserHomePage = () => {
                     marginBottom: 4,
                 }}
             >
-                <TextField
-                    label="Organization Name"
-                    variant="outlined"
-                    fullWidth
-                    value={organizationName}
-                    onChange={(e) => setOrganizationName(e.target.value)}
-                />
+                <FormControl fullWidth>
+                    <InputLabel>Organization Name</InputLabel>
+                    <Select
+                        value={organizationName}
+                        onChange={(e) => setOrganizationName(e.target.value)}
+                        label="Organization Name"
+                    >
+                        {organizations.map((org) => (
+                            <MenuItem key={org._id} value={org.organization_name}>
+                                {org.organization_name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
                 <TextField
                     label="Secure Code"
                     variant="outlined"
