@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const EmailNotification = require('../models/EmailNotification');
 const Admin = require('../models/Admin');
 
 router.post('/register', async (req, res) => {
@@ -54,6 +55,35 @@ router.post('/login', async (req, res) => {
     }
 
     res.status(200).json({ message: 'Admin logged in successfully', admin });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Add an email to the list
+router.post('/emails', async (req, res) => {
+  const { adminId, email } = req.body;
+
+  try {
+    const existingEmail = await EmailNotification.findOne({ admin_id: adminId, email });
+    if (existingEmail) {
+      return res.status(400).json({ message: 'Email already exists.' });
+    }
+
+    const newEmail = new EmailNotification({ admin_id: adminId, email });
+    await newEmail.save();
+    res.status(201).json(newEmail);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete an email from the list
+router.delete('/emails/:emailId', async (req, res) => {
+  try {
+    const { emailId } = req.params;
+    await EmailNotification.findByIdAndDelete(emailId);
+    res.status(200).json({ message: 'Email deleted successfully.' });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }

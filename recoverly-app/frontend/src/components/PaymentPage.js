@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Box, Container, Typography, Button, TextField } from '@mui/material';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import jsPDF from 'jspdf';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PaymentPage = () => {
   const [donationAmount, setDonationAmount] = useState(5);
@@ -15,6 +16,38 @@ const PaymentPage = () => {
   const validateEmail = (email) => {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return regex.test(email);
+  };
+
+  const generatePDFReceipt = () => {
+    const doc = new jsPDF();
+
+    // Set font and styles
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(18);
+    doc.text('Recoverly Donation Receipt', 20, 20);
+
+    // Add a line break
+    doc.line(20, 25, 190, 25); // Draw a line under the title
+    doc.setFontSize(12);
+    doc.text(`Thank you for your donation, ${donorName}!`, 20, 40);
+
+    // Donation details
+    doc.setFontSize(12);
+    doc.text(`Donation Amount: $${donationAmount}`, 20, 55);
+    doc.text(`Donor Email: ${donorEmail}`, 20, 65);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 75);
+
+    // Additional message
+    doc.setFontSize(12);
+    doc.text(`Your contribution helps us improve our platform.`, 20, 90);
+    doc.text('Recoverly Team', 20, 100);
+
+    // Add a footer or more style
+    doc.setFontSize(10);
+    doc.text('For any questions, please contact us at support@recoverly.com', 20, 110);
+
+    // Save the PDF
+    doc.save('Donation_Receipt.pdf');
   };
 
   const handleDonate = () => {
@@ -78,6 +111,7 @@ const PaymentPage = () => {
           <Button variant="contained" color="primary" onClick={handleDonate} sx={{ mt: 2 }}>
             Confirm Donation Amount
           </Button>
+
           <Box sx={{ mt: 4, width: '100%', display: 'flex', justifyContent: 'center' }}>
             <PayPalButtons
               key={donationAmount}
@@ -90,6 +124,7 @@ const PaymentPage = () => {
               onApprove={(data, actions) => {
                 return actions.order.capture().then((details) => {
                   toast.success(`Donation successful, thank you ${details.payer.name.given_name}!`);
+                  generatePDFReceipt(); // Generate PDF receipt after successful donation
                   navigate('/thank-you'); // Navigate to a thank-you page
                 });
               }}
@@ -98,10 +133,24 @@ const PaymentPage = () => {
               }}
               onError={(err) => {
                 console.error(err);
-                toast.error('Something went wrong with the donation.');
+                toast.error('Something went wrong with the donation process.');
               }}
             />
           </Box>
+
+          {/* Mock Payment Success Button */}
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              toast.success("Mock payment successful!");
+              generatePDFReceipt(); // Generate PDF receipt
+              navigate('/thank-you'); // Navigate to thank-you page
+            }}
+            sx={{ mt: 4 }}
+          >
+            Mock Payment Success
+          </Button>
         </Box>
         <ToastContainer />
       </Container>

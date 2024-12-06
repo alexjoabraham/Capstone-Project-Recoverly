@@ -19,6 +19,7 @@ import theme from './theme';
 import EmailList from './components/EmailList';
 import FoundItems from './components/FoundItems';
 import PaymentPage from './components/PaymentPage';
+import ThankYouPage from './components/ThankYouPage';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin-lost-items" element={<AdminLostItem />} />
+            <Route path="/thank-you" element={<ThankYouPage />} />
           </Routes>
         </div>
         <Footer />

@@ -1,53 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, List, ListItem, ListItemText, IconButton, Typography, Container, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import BlockIcon from '@mui/icons-material/Block';
 import CheckIcon from '@mui/icons-material/Check';
+import axios from 'axios';
 
-function EmailList() {
+function EmailList({ adminId }) {
   const [emails, setEmails] = useState([]);
   const [newEmail, setNewEmail] = useState("");
   const [error, setError] = useState("");
-  const [editingIndex, setEditingIndex] = useState(null); // Track index being edited
+  const [editingIndex, setEditingIndex] = useState(null);
 
-  const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  useEffect(() => {
+    fetchEmails();
+  }, []);
+
+  const fetchEmails = async () => {
+    try {
+      const response = await axios.get(`/api/admins/emails/${adminId}`);
+      setEmails(response.data);
+    } catch (error) {
+      console.error('Error fetching emails:', error);
+    }
   };
 
-  const handleAddOrEditEmail = () => {
+  const handleAddOrEditEmail = async () => {
     if (!newEmail) {
       setError("Please enter an email address.");
       return;
     }
 
-    if (!isValidEmail(newEmail)) {
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail);
+    if (!isValidEmail) {
       setError("Please enter a valid email address.");
       return;
     }
 
-    if (editingIndex !== null) {
-      // Edit email at the specified index
-      const updatedEmails = [...emails];
-      updatedEmails[editingIndex].email = newEmail;
-      setEmails(updatedEmails);
-      setEditingIndex(null);
-    } else {
-      // Add a new email if not already in the list
-      if (emails.find((e) => e.email === newEmail)) {
-        setError("This email is already in the list.");
-        return;
+    try {
+      if (editingIndex !== null) {
+        const updatedEmails = [...emails];
+        updatedEmails[editingIndex].email = newEmail;
+        setEmails(updatedEmails);
+        setEditingIndex(null);
+      } else {
+        const response = await axios.post('/api/admins/emails', { adminId, email: newEmail });
+        setEmails([...emails, response.data]);
       }
-      setEmails([...emails, { email: newEmail, disabled: false }]);
+      setNewEmail("");
+      setError("");
+    } catch (error) {
+      console.error('Error adding or editing email:', error);
     }
-
-    setNewEmail("");
-    setError(""); // Clear error if email is valid
   };
 
-  const handleRemoveEmail = (index) => {
-    setEmails(emails.filter((_, i) => i !== index));
+  const handleRemoveEmail = async (emailId) => {
+    try {
+      await axios.delete(`/api/admins/emails/${emailId}`);
+      setEmails(emails.filter((email) => email._id !== emailId));
+    } catch (error) {
+      console.error('Error deleting email:', error);
+    }
   };
 
   const handleEditEmail = (index) => {
@@ -55,31 +68,13 @@ function EmailList() {
     setEditingIndex(index);
   };
 
-  const handleDisableEmail = (index) => {
-    const updatedEmails = [...emails];
-    updatedEmails[index].disabled = !updatedEmails[index].disabled;
-    setEmails(updatedEmails);
-  };
-
-  const handleNotify = () => {
-    const activeEmails = emails.filter(email => !email.disabled);
-    if (activeEmails.length === 0) {
-      alert("No active emails to notify.");
-      return;
-    }
-    alert(`Notifications sent to: ${activeEmails.map(e => e.email).join(", ")}`);
-  };
-
   return (
     <Container maxWidth="sm">
       <Box sx={{ bgcolor: '#f5f5f5', p: 3, borderRadius: 2, boxShadow: 2 }}>
-        <Typography variant="h4" component="h2" align="center" gutterBottom>
-          Email List
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 2, mb: 1 }}>
+        <Typography variant="h4" align="center" gutterBottom>Email List</Typography>
+        <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
           <TextField
             fullWidth
-            type="email"
             label="Enter email"
             variant="outlined"
             value={newEmail}
@@ -87,49 +82,22 @@ function EmailList() {
             error={Boolean(error)}
             helperText={error}
           />
-          <Button variant="contained" color="primary" onClick={handleAddOrEditEmail}>
-            {editingIndex !== null ? "Save" : "Add Email"}
+          <Button variant="contained" onClick={handleAddOrEditEmail}>
+            {editingIndex !== null ? "Save" : "Add"}
           </Button>
         </Box>
         <List>
-          {emails.map((item, index) => (
-            <ListItem
-              key={index}
-              secondaryAction={
-                <Box>
-                  <IconButton color="primary" onClick={() => handleEditEmail(index)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    color={item.disabled ? "success" : "warning"}
-                    onClick={() => handleDisableEmail(index)}
-                  >
-                    {item.disabled ? <CheckIcon /> : <BlockIcon />}
-                  </IconButton>
-                  <IconButton color="error" onClick={() => handleRemoveEmail(index)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
-              }
-            >
-              <ListItemText
-                primary={item.email}
-                sx={{
-                  textDecoration: item.disabled ? "line-through" : "none",
-                  color: item.disabled ? "gray" : "inherit"
-                }}
-              />
+          {emails.map((email, index) => (
+            <ListItem key={email._id} secondaryAction={
+              <>
+                <IconButton onClick={() => handleEditEmail(index)}><EditIcon /></IconButton>
+                <IconButton onClick={() => handleRemoveEmail(email._id)}><DeleteIcon /></IconButton>
+              </>
+            }>
+              <ListItemText primary={email.email} />
             </ListItem>
           ))}
         </List>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleNotify}
-          sx={{ mt: 2 }}
-        >
-          Notify
-        </Button>
       </Box>
     </Container>
   );
