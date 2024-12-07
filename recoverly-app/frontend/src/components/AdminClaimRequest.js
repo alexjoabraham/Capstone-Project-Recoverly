@@ -104,7 +104,6 @@ const AdminClaimRequest = () => {
                   : {}),
               }}
             >
-
               <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Box sx={{ width: '45%', padding: 2 }}>
                   {claim.founditem_details ? (
@@ -116,14 +115,14 @@ const AdminClaimRequest = () => {
                         Date: {new Date(claim.founditem_details.founditem_date).toLocaleDateString()}
                       </Typography>
                       <Typography>Description: {claim.founditem_details.founditem_description}</Typography>
-                      {claim.founditem_details.founditem_image && (
-                        <Box
-                          component="img"
-                          src={claim.founditem_details.founditem_image}
-                          alt={claim.founditem_details.founditem_name}
-                          sx={{ width: '100%', height: 'auto', borderRadius: 2, marginTop: 2 }}
-                        />
-                      )}
+                      <Box
+                        component="img"
+                        src={
+                          claim.founditem_details.founditem_image || 'https://placehold.co/100?text=No+Image'
+                        }
+                        alt={claim.founditem_details.founditem_name || 'No Image'}
+                        sx={{ width: '100%', height: 'auto', borderRadius: 2, marginTop: 2 }}
+                      />
                     </>
                   ) : (
                     <Typography color="error">Found item details not available</Typography>
@@ -133,14 +132,14 @@ const AdminClaimRequest = () => {
                 <Box sx={{ width: '45%', padding: 2 }}>
                   <Typography variant="h6">Claim Details</Typography>
                   <Typography>Description: {claim.userclaim_description}</Typography>
-                  {claim.claim_image && (
-                    <Box
-                      component="img"
-                      src={claim.claim_image}
-                      alt="Claim Evidence"
-                      sx={{ width: '100%', height: 'auto', borderRadius: 2, marginTop: 2 }}
-                    />
-                  )}
+                  <Box
+                    component="img"
+                    src={
+                      claim.claim_image || 'https://placehold.co/100?text=No+Image'
+                    }
+                    alt="Claim Evidence"
+                    sx={{ width: '100%', height: 'auto', borderRadius: 2, marginTop: 2 }}
+                  />
                 </Box>
               </Box>
 
