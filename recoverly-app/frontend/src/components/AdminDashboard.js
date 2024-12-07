@@ -156,11 +156,13 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleSearch = () => {
-    const filtered = foundItems.filter((item) => {
-      const searchFields = `${item.founditem_name} ${item.founditem_location} ${item.founditem_description} ${item.founditem_category}`.toLowerCase();
-      return searchFields.includes(searchText.toLowerCase());
-    });
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
+    const filtered = foundItems.filter((item) =>
+      `${item.founditem_name} ${item.founditem_location} ${item.founditem_description} ${item.founditem_category}`
+        .toLowerCase()
+        .includes(e.target.value.toLowerCase())
+    );
     setFilteredItems(filtered);
   };
 
@@ -284,18 +286,15 @@ const AdminDashboard = () => {
           Found Items List
         </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+        <Box sx={{ marginBottom: 3, display: 'flex', justifyContent: 'center' }}>
           <TextField
-            label="Search"
+            label="Search Found Items"
             variant="outlined"
             fullWidth
             value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            sx={{ marginRight: 2 }}
+            onChange={handleSearch}
+            sx={{ maxWidth: 500 }}
           />
-          <Button variant="contained" color="primary" onClick={handleSearch}>
-            Search
-          </Button>
         </Box>
 
         {filteredItems.map((item) => (

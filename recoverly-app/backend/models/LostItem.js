@@ -9,7 +9,9 @@ const lostItemSchema = new mongoose.Schema({
   lostitem_image: { type: String }, 
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User'}, 
   admin_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' }, 
-  found_flag: { type: Boolean, default: false } 
+  found_flag: { type: Boolean, default: false },
+  notfound_flag: { type: Boolean, default: false },
+  notify_flag: { type: Boolean, default: false }
 }, {
   timestamps: true
 });
