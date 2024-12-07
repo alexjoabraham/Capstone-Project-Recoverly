@@ -310,14 +310,12 @@ const AdminDashboard = () => {
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {item.founditem_image && (
-                <Box
-                  component="img"
-                  src={item.founditem_image}
-                  alt={item.founditem_name}
-                  sx={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 1, marginRight: 2 }}
-                />
-              )}
+            <Box
+              component="img"
+              src={item.founditem_image ? item.founditem_image : 'https://placehold.co/100?text=No+Image'}
+              alt={item.founditem_name || 'Placeholder'}
+              sx={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 1, marginRight: 2 }}
+            />
               <Box>
                 <Typography variant="subtitle1">Name: {item.founditem_name}</Typography>
                 <Typography variant="subtitle2">Category: {item.founditem_category}</Typography>
