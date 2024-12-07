@@ -38,11 +38,6 @@ const UserHomePage = () => {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        navigate('/user-login');
-    };
-
     return (
         <Container maxWidth="md" sx={{ marginTop: 4 }}>
             <Box
@@ -128,15 +123,6 @@ const UserHomePage = () => {
                     </TableBody>
                 </Table>
             </Paper>
-
-            <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleLogout}
-                sx={{ alignSelf: "flex-end" }}
-            >
-                Logout
-            </Button>
         </Container>
     );
 };

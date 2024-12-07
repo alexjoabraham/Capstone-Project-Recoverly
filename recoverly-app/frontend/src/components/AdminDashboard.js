@@ -166,21 +166,10 @@ const AdminDashboard = () => {
     setFilteredItems(filtered);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken'); 
-    toast.info('Logged out successfully.');
-    setTimeout(() => {
-      window.location.href = '/admin-login'; 
-    }, 1000);
-  };
-
   return (
     <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5">Admin Dashboard</Typography>
-        <Button variant="contained" color="secondary" onClick={handleLogout}>
-          Logout
-        </Button>
       </Box>
       <Typography variant="h5" gutterBottom align="center">
         {editMode ? 'Edit Found Item' : 'Add Found Item'}

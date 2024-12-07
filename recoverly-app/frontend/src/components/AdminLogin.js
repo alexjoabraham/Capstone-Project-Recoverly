@@ -36,7 +36,7 @@ const AdminLogin = () => {
   });
 
   return (
-    <Container maxWidth="xs" style={{ marginTop: '50px' }}>
+    <Container maxWidth="xs">
       <Typography variant="h5" align="center">Admin Login</Typography>
       <form onSubmit={formik.handleSubmit} className="mt-4">
         <TextField
