@@ -19,6 +19,7 @@ const Navbar = () => {
         <Button color="inherit" component={Link} to="/report-lost-item">Report Lost Item</Button>
         <Button color="inherit" component={Link} to="/admin-dashboard">Admin Dashboard</Button>
         <Button color="inherit" component={Link} to="/admin-lost-items">Admin Lost Items</Button>
+        <Button color="inherit" component={Link} to="/admin-claim-requests">Admin Claim Requests</Button>
       </Toolbar>
     </AppBar>
   );

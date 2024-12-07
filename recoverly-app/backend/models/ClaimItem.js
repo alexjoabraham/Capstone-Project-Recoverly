@@ -6,7 +6,7 @@ const claimItemSchema = new mongoose.Schema({
   claim_image: { type: String },
   userclaim_description: { type: String, required: true },
   claimapproved: { type: Boolean, default: false },
-  reason: { type: String },
+  reason: { type: String, default: '' },
 }, {
   timestamps: true
 });
