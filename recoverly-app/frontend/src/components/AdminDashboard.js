@@ -316,7 +316,7 @@ const AdminDashboard = () => {
               alt={item.founditem_name || 'Placeholder'}
               sx={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 1, marginRight: 2 }}
             />
-              <Box>
+              <Box sx={{ textAlign: 'left' }}>
                 <Typography variant="subtitle1">Name: {item.founditem_name}</Typography>
                 <Typography variant="subtitle2">Category: {item.founditem_category}</Typography>
                 <Typography variant="body2">Location: {item.founditem_location}</Typography>
