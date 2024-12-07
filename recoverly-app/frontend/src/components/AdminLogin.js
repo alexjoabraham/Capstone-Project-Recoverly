@@ -23,10 +23,14 @@ const AdminLogin = () => {
       try {
         const response = await axios.post('http://localhost:5000/api/admins/login', values);
         console.log('User logged in successfully:', response.data);
+        console.log('Admin Login Token:', response.data.token); 
+        localStorage.setItem('adminToken', response.data.token);
+    
         toast.success('User logged in successfully!');
+        window.location.href = '/admin-dashboard'; 
       } catch (error) {
-        console.error('Error logging in user:', error.response.data);
-        toast.error('Error logging in user: ' + error.response.data.message);
+        console.error('Error logging in user:', error.response?.data || error.message);
+        toast.error('Error logging in user: ' + (error.response?.data?.message || 'Server error'));
       }
     },
   });

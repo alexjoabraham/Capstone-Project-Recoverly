@@ -4,6 +4,7 @@ const multer = require('multer');
 const FoundItem = require('../models/FoundItem');
 const express = require('express');
 const router = express.Router();
+const authenticateAdmin = require('../middleware/authenticateAdmin')
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -35,17 +36,26 @@ const upload = multer({
 });
 
 router.route('/')
-  .post((req, res, next) => {
+  .post(authenticateAdmin, (req, res, next) => {
+    console.log('POST /admin-dashboard - Admin Authenticated:', req.adminId);
     upload.single('founditem_image')(req, res, (err) => {
       if (err) {
         console.error('Multer upload error:', err);
         return res.status(400).json({ message: err.message });
       }
+      console.log('Multer Upload Success - File:', req.file);
       next();
     });
   }, async (req, res) => {
     try {
-      const { founditem_name, founditem_location, founditem_description, founditem_category, founditem_date, admin_id } = req.body;
+      console.log('POST /admin-dashboard - Request Body:', req.body);
+      const admin_id = req.adminId;
+      console.log('Received admin_id:', admin_id);
+      if (!admin_id) {
+        return res.status(403).json({ message: 'Admin not authenticated' });
+      }
+
+      const { founditem_name, founditem_location, founditem_description, founditem_category, founditem_date } = req.body;
       const imageUrl = req.file ? req.file.location : null;
 
       const newFoundItem = new FoundItem({
@@ -66,9 +76,11 @@ router.route('/')
       res.status(400).json({ message: error.message || 'Error adding found item' });
     }
   })
-  .get(async (req, res) => {
+  .get(authenticateAdmin, async (req, res) => {
     try {
-      const foundItems = await FoundItem.find();
+      const admin_id = req.adminId;
+      console.log('Received admin_id in get:', admin_id);
+      const foundItems = await FoundItem.find({ admin_id });
       res.status(200).json(foundItems);
     } catch (error) {
       console.error('Error fetching found items:', error);

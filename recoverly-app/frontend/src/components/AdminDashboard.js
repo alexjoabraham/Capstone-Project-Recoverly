@@ -4,13 +4,16 @@ import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { jwtDecode } from 'jwt-decode';
+import apiClient from '../api/apiClient';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 const categories = ['Electronics', 'Clothing', 'Accessories', 'Documents', 'Others'];
 
 const AdminDashboard = () => {
+  const [adminId, setAdminId] = useState(null);
+  const [token, setToken] = useState(null); 
   const [itemName, setItemName] = useState('');
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
@@ -26,12 +29,26 @@ const AdminDashboard = () => {
   const [editItemId, setEditItemId] = useState(null);
 
   useEffect(() => {
-    fetchFoundItems();
+    const token = localStorage.getItem('adminToken');
+    console.log('Retrieved token:', token);
+    if (token) {
+      setToken(token);
+      const decoded = jwtDecode(token);
+      console.log('Decoded Admin ID:', decoded?.id);
+      setAdminId(decoded?.id);
+      fetchFoundItems(decoded.id);
+    }
   }, []);
 
-  const fetchFoundItems = async () => {
+  const fetchFoundItems = async (adminId) => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin-dashboard');
+      const token = localStorage.getItem('adminToken'); 
+      const response = await axios.get('http://localhost:5000/api/admin-dashboard', {
+        headers: {
+          Authorization: `Bearer ${token}`,  
+        },
+        params: { adminId },  
+      });
       setFoundItems(response.data);
       setFilteredItems(response.data);
     } catch (error) {
@@ -53,30 +70,43 @@ const AdminDashboard = () => {
   };
 
   const handleSubmit = async () => {
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+      'Authorization': `Bearer ${token}`,  
+    };
     const formData = new FormData();
     formData.append('founditem_name', itemName);
     formData.append('founditem_location', location);
     formData.append('founditem_description', description);
     formData.append('founditem_category', category);
     formData.append('founditem_date', date);
+    console.log('Admin ID before submitting:', adminId);
+    formData.append('adminId', adminId); 
     if (image) {
       formData.append('founditem_image', image);
     }
-
+    console.log('Submitting Form Data:', formData);
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
     try {
       if (editMode) {
-        await axios.put(`http://localhost:5000/api/admin-dashboard/${editItemId}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        console.log(`Editing Found Item with ID: ${editItemId}`);
+        const response = await apiClient.put(
+          `http://localhost:5000/api/admin-dashboard/${editItemId}`,
+          formData, { headers });
+        console.log('Server Response (Edit):', response.data);
         toast.success('Found item updated successfully!');
       } else {
-        await axios.post('http://localhost:5000/api/admin-dashboard', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const response = await apiClient.post(
+          'http://localhost:5000/api/admin-dashboard',
+          formData,
+          formData, { headers });
+        console.log('Server Response (Add):', response.data);
         toast.success('Found item added successfully!');
       }
 
-      fetchFoundItems();
+      fetchFoundItems(adminId);
       resetForm();
     } catch (error) {
       console.error('Error saving found item:', error);
@@ -126,16 +156,32 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleSearch = () => {
-    const filtered = foundItems.filter((item) => {
-      const searchFields = `${item.founditem_name} ${item.founditem_location} ${item.founditem_description} ${item.founditem_category}`.toLowerCase();
-      return searchFields.includes(searchText.toLowerCase());
-    });
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
+    const filtered = foundItems.filter((item) =>
+      `${item.founditem_name} ${item.founditem_location} ${item.founditem_description} ${item.founditem_category}`
+        .toLowerCase()
+        .includes(e.target.value.toLowerCase())
+    );
     setFilteredItems(filtered);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken'); 
+    toast.info('Logged out successfully.');
+    setTimeout(() => {
+      window.location.href = '/admin-login'; 
+    }, 1000);
   };
 
   return (
     <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h5">Admin Dashboard</Typography>
+        <Button variant="contained" color="secondary" onClick={handleLogout}>
+          Logout
+        </Button>
+      </Box>
       <Typography variant="h5" gutterBottom align="center">
         {editMode ? 'Edit Found Item' : 'Add Found Item'}
       </Typography>
@@ -240,58 +286,59 @@ const AdminDashboard = () => {
           Found Items List
         </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+        <Box sx={{ marginBottom: 3, display: 'flex', justifyContent: 'center' }}>
           <TextField
-            label="Search"
+            label="Search Found Items"
             variant="outlined"
             fullWidth
             value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            sx={{ marginRight: 2 }}
+            onChange={handleSearch}
+            sx={{ maxWidth: 500 }}
           />
-          <Button variant="contained" color="primary" onClick={handleSearch}>
-            Search
-          </Button>
         </Box>
 
-        {filteredItems.map((item) => (
-          <Paper
-            key={item._id}
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 2,
-              padding: 2,
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {item.founditem_image && (
+        {filteredItems.length > 0 ? (
+          filteredItems.map((item) => (
+            <Paper
+              key={item._id}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: 2,
+                padding: 2,
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Box
                   component="img"
-                  src={item.founditem_image}
-                  alt={item.founditem_name}
+                  src={item.founditem_image ? item.founditem_image : 'https://placehold.co/100?text=No+Image'}
+                  alt={item.founditem_name || 'Placeholder'}
                   sx={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 1, marginRight: 2 }}
                 />
-              )}
-              <Box>
-                <Typography variant="subtitle1">Name: {item.founditem_name}</Typography>
-                <Typography variant="subtitle2">Category: {item.founditem_category}</Typography>
-                <Typography variant="body2">Location: {item.founditem_location}</Typography>
-                <Typography variant="body2">Date: {new Date(item.founditem_date).toLocaleDateString()}</Typography>
-                <Typography variant="body2">Description: {item.founditem_description}</Typography>
+                <Box sx={{ textAlign: 'left' }}>
+                  <Typography variant="subtitle1">Name: {item.founditem_name}</Typography>
+                  <Typography variant="subtitle2">Category: {item.founditem_category}</Typography>
+                  <Typography variant="body2">Location: {item.founditem_location}</Typography>
+                  <Typography variant="body2">Date: {new Date(item.founditem_date).toLocaleDateString()}</Typography>
+                  <Typography variant="body2">Description: {item.founditem_description}</Typography>
+                </Box>
               </Box>
-            </Box>
-            <Box>
-              <IconButton onClick={() => handleEdit(item)}>
-                <EditIcon />
-              </IconButton>
-              <IconButton onClick={() => handleDelete(item._id)}>
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-          </Paper>
-        ))}
+              <Box>
+                <IconButton onClick={() => handleEdit(item)}>
+                  <EditIcon />
+                </IconButton>
+                <IconButton onClick={() => handleDelete(item._id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
+            </Paper>
+          ))
+        ) : (
+          <Typography variant="body1" sx={{ textAlign: 'center', marginTop: 4 }}>
+            No items found. Add a new item to get started!
+          </Typography>
+        )}
       </Box>
     </Box>
   );
