@@ -23,8 +23,8 @@ const AdminLogin = () => {
       try {
         const response = await axios.post('http://localhost:5000/api/admins/login', values);
         console.log('User logged in successfully:', response.data);
-        
-        sessionStorage.setItem('adminToken', response.data.token);
+        console.log('Admin Login Token:', response.data.token); 
+        localStorage.setItem('adminToken', response.data.token);
     
         toast.success('User logged in successfully!');
         window.location.href = '/admin-dashboard'; 

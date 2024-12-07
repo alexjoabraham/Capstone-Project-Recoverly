@@ -7,16 +7,20 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const isAdminRoute = config.url.startsWith('/admins');
+    const isAdminRoute = config.url.includes('/admins') || config.url.includes('/admin-dashboard');
     const tokenKey = isAdminRoute ? 'adminToken' : 'userToken';
 
     const token = localStorage.getItem(tokenKey);
+    console.log('Intercepting Request:', config.url, 'Token Key:', tokenKey, 'Token:', token);
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`; // Attach token to headers
+      config.headers.Authorization = `Bearer ${token}`; 
     }
     return config;
   },
-  (error) => Promise.reject(error) // Handle request errors
+  (error) => {
+    console.error('Axios Request Interceptor Error:', error); 
+    return Promise.reject(error);
+  }
 );
 
 export default apiClient;

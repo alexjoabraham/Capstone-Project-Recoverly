@@ -4,13 +4,16 @@ import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { jwtDecode } from 'jwt-decode';
+import apiClient from '../api/apiClient';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 const categories = ['Electronics', 'Clothing', 'Accessories', 'Documents', 'Others'];
 
 const AdminDashboard = () => {
+  const [adminId, setAdminId] = useState(null);
+  const [token, setToken] = useState(null); 
   const [itemName, setItemName] = useState('');
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
@@ -26,12 +29,26 @@ const AdminDashboard = () => {
   const [editItemId, setEditItemId] = useState(null);
 
   useEffect(() => {
-    fetchFoundItems();
+    const token = localStorage.getItem('adminToken');
+    console.log('Retrieved token:', token);
+    if (token) {
+      setToken(token);
+      const decoded = jwtDecode(token);
+      console.log('Decoded Admin ID:', decoded?.id);
+      setAdminId(decoded?.id);
+      fetchFoundItems(decoded.id);
+    }
   }, []);
 
-  const fetchFoundItems = async () => {
+  const fetchFoundItems = async (adminId) => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin-dashboard');
+      const token = localStorage.getItem('adminToken'); 
+      const response = await axios.get('http://localhost:5000/api/admin-dashboard', {
+        headers: {
+          Authorization: `Bearer ${token}`,  
+        },
+        params: { adminId },  
+      });
       setFoundItems(response.data);
       setFilteredItems(response.data);
     } catch (error) {
@@ -53,30 +70,43 @@ const AdminDashboard = () => {
   };
 
   const handleSubmit = async () => {
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+      'Authorization': `Bearer ${token}`,  
+    };
     const formData = new FormData();
     formData.append('founditem_name', itemName);
     formData.append('founditem_location', location);
     formData.append('founditem_description', description);
     formData.append('founditem_category', category);
     formData.append('founditem_date', date);
+    console.log('Admin ID before submitting:', adminId);
+    formData.append('adminId', adminId); 
     if (image) {
       formData.append('founditem_image', image);
     }
-
+    console.log('Submitting Form Data:', formData);
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
     try {
       if (editMode) {
-        await axios.put(`http://localhost:5000/api/admin-dashboard/${editItemId}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        console.log(`Editing Found Item with ID: ${editItemId}`);
+        const response = await apiClient.put(
+          `http://localhost:5000/api/admin-dashboard/${editItemId}`,
+          formData, { headers });
+        console.log('Server Response (Edit):', response.data);
         toast.success('Found item updated successfully!');
       } else {
-        await axios.post('http://localhost:5000/api/admin-dashboard', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const response = await apiClient.post(
+          'http://localhost:5000/api/admin-dashboard',
+          formData,
+          formData, { headers });
+        console.log('Server Response (Add):', response.data);
         toast.success('Found item added successfully!');
       }
 
-      fetchFoundItems();
+      fetchFoundItems(adminId);
       resetForm();
     } catch (error) {
       console.error('Error saving found item:', error);
