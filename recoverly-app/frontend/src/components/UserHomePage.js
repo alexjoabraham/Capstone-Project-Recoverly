@@ -9,6 +9,7 @@ const UserHomePage = () => {
     const [secureCode, setSecureCode] = useState('');
     const [message, setMessage] = useState('');
     const [organizations, setOrganizations] = useState([]);
+    const [claims, setClaims] = useState([]);
 
     useEffect(() => {
         const fetchOrganizations = async () => {
@@ -20,7 +21,22 @@ const UserHomePage = () => {
             }
         };
 
+        const fetchClaims = async () => {
+            try {
+                const token = localStorage.getItem('token'); 
+                const response = await axios.get('http://localhost:5000/api/users/claims', {
+                    headers: {
+                        Authorization: `Bearer ${token}`, 
+                    },
+                });
+                setClaims(response.data); 
+            } catch (error) {
+                console.error('Error fetching claims:', error);
+            }
+        };
+
         fetchOrganizations();
+        fetchClaims();
     }, []);
 
     const handleValidation = async () => {
@@ -98,28 +114,25 @@ const UserHomePage = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell sx={{ borderBottom: "none", fontWeight: "bold" }}>
-                                Requests
-                            </TableCell>
-                            <TableCell sx={{ borderBottom: "none", fontWeight: "bold" }}>
-                                Status
-                            </TableCell>
-                            <TableCell sx={{ borderBottom: "none", fontWeight: "bold" }}>
-                                Comments
-                            </TableCell>
+                            <TableCell sx={{ fontWeight: "bold" }}>Request</TableCell>
+                            <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
+                            <TableCell sx={{ fontWeight: "bold" }}>Comments</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableRow>
-                            <TableCell sx={{ borderBottom: "none" }}></TableCell>
-                            <TableCell sx={{ borderBottom: "none" }}></TableCell>
-                            <TableCell sx={{ borderBottom: "none" }}></TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell sx={{ borderBottom: "none" }}></TableCell>
-                            <TableCell sx={{ borderBottom: "none" }}></TableCell>
-                            <TableCell sx={{ borderBottom: "none" }}></TableCell>
-                        </TableRow>
+                        {claims.map((claim) => (
+                            <TableRow key={claim._id}>
+                                <TableCell>{claim.founditem_name || 'N/A'}</TableCell>
+                                <TableCell>
+                                    {claim.claimapproved
+                                        ? 'Claim Approved'
+                                        : claim.reason
+                                        ? 'Claim Rejected'
+                                        : 'Pending with Admin'}
+                                </TableCell>
+                                <TableCell>{claim.reason || '-'}</TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </Paper>
