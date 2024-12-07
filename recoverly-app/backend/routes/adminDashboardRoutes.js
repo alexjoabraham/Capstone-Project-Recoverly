@@ -78,7 +78,9 @@ router.route('/')
   })
   .get(authenticateAdmin, async (req, res) => {
     try {
-      const foundItems = await FoundItem.find();
+      const admin_id = req.adminId;
+      console.log('Received admin_id in get:', admin_id);
+      const foundItems = await FoundItem.find({ admin_id });
       res.status(200).json(foundItems);
     } catch (error) {
       console.error('Error fetching found items:', error);

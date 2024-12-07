@@ -297,42 +297,48 @@ const AdminDashboard = () => {
           />
         </Box>
 
-        {filteredItems.map((item) => (
-          <Paper
-            key={item._id}
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 2,
-              padding: 2,
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box
-              component="img"
-              src={item.founditem_image ? item.founditem_image : 'https://placehold.co/100?text=No+Image'}
-              alt={item.founditem_name || 'Placeholder'}
-              sx={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 1, marginRight: 2 }}
-            />
-              <Box sx={{ textAlign: 'left' }}>
-                <Typography variant="subtitle1">Name: {item.founditem_name}</Typography>
-                <Typography variant="subtitle2">Category: {item.founditem_category}</Typography>
-                <Typography variant="body2">Location: {item.founditem_location}</Typography>
-                <Typography variant="body2">Date: {new Date(item.founditem_date).toLocaleDateString()}</Typography>
-                <Typography variant="body2">Description: {item.founditem_description}</Typography>
+        {filteredItems.length > 0 ? (
+          filteredItems.map((item) => (
+            <Paper
+              key={item._id}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: 2,
+                padding: 2,
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box
+                  component="img"
+                  src={item.founditem_image ? item.founditem_image : 'https://placehold.co/100?text=No+Image'}
+                  alt={item.founditem_name || 'Placeholder'}
+                  sx={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 1, marginRight: 2 }}
+                />
+                <Box sx={{ textAlign: 'left' }}>
+                  <Typography variant="subtitle1">Name: {item.founditem_name}</Typography>
+                  <Typography variant="subtitle2">Category: {item.founditem_category}</Typography>
+                  <Typography variant="body2">Location: {item.founditem_location}</Typography>
+                  <Typography variant="body2">Date: {new Date(item.founditem_date).toLocaleDateString()}</Typography>
+                  <Typography variant="body2">Description: {item.founditem_description}</Typography>
+                </Box>
               </Box>
-            </Box>
-            <Box>
-              <IconButton onClick={() => handleEdit(item)}>
-                <EditIcon />
-              </IconButton>
-              <IconButton onClick={() => handleDelete(item._id)}>
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-          </Paper>
-        ))}
+              <Box>
+                <IconButton onClick={() => handleEdit(item)}>
+                  <EditIcon />
+                </IconButton>
+                <IconButton onClick={() => handleDelete(item._id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
+            </Paper>
+          ))
+        ) : (
+          <Typography variant="body1" sx={{ textAlign: 'center', marginTop: 4 }}>
+            No items found. Add a new item to get started!
+          </Typography>
+        )}
       </Box>
     </Box>
   );
