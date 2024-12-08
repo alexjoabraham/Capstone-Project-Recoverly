@@ -155,4 +155,30 @@ router.get('/organizations', async (req, res) => {
   }
 });
 
+router.get('/claims', authenticateUser, async (req, res) => {
+  try {
+      const userId = req.user._id; 
+
+      const claims = await ClaimItem.find({ user_id: userId })
+          .populate('founditem_id', 'founditem_name') 
+          .lean();
+
+      const formattedClaims = claims.map((claim) => ({
+          id: claim._id,
+          founditem_name: claim.founditem_id?.founditem_name || 'N/A',
+          status: claim.claimapproved
+              ? 'Claim Approved'
+              : claim.reason
+              ? 'Claim Rejected'
+              : 'Pending with Admin',
+          comments: claim.reason || '',
+      }));
+
+      res.json(formattedClaims);
+  } catch (error) {
+      console.error('Error fetching claims:', error);
+      res.status(500).json({ message: 'Error fetching claims' });
+  }
+});
+
 module.exports = router;
