@@ -29,6 +29,7 @@ const UserHomePage = () => {
                         Authorization: `Bearer ${token}`, 
                     },
                 });
+                console.log('Fetched Claims:', response.data);
                 setClaims(response.data); 
             } catch (error) {
                 console.error('Error fetching claims:', error);
@@ -47,6 +48,9 @@ const UserHomePage = () => {
             });
             setMessage(response.data.message);
             if (response.data.success) {
+                sessionStorage.setItem('organizationName', organizationName);
+                sessionStorage.setItem('secureCode', secureCode);
+
                 navigate('/claim-items');
             }
         } catch (error) {
@@ -124,13 +128,9 @@ const UserHomePage = () => {
                             <TableRow key={claim._id}>
                                 <TableCell>{claim.founditem_name || 'N/A'}</TableCell>
                                 <TableCell>
-                                    {claim.claimapproved
-                                        ? 'Claim Approved'
-                                        : claim.reason
-                                        ? 'Claim Rejected'
-                                        : 'Pending with Admin'}
+                                    {claim.status}
                                 </TableCell>
-                                <TableCell>{claim.reason || '-'}</TableCell>
+                                <TableCell>{claim.comments || '-'}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

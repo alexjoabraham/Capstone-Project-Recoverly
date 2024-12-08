@@ -10,7 +10,22 @@ const ClaimItemsPage = () => {
     useEffect(() => {
         const fetchFoundItems = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/users/found-items');
+                const organizationName = sessionStorage.getItem('organizationName');
+                const secureCode = sessionStorage.getItem('secureCode');
+
+                if (!organizationName || !secureCode) {
+                    console.error('Organization data missing in session storage.');
+                    navigate('/user-home'); 
+                    return;
+                }
+
+                const response = await axios.get('http://localhost:5000/api/users/found-items', {
+                    params: {
+                        organization_name: organizationName,
+                        organization_securecode: secureCode,
+                    },
+                });
+
                 setFoundItems(response.data);
             } catch (error) {
                 console.error('Error fetching found items:', error);
@@ -18,11 +33,21 @@ const ClaimItemsPage = () => {
         };
 
         fetchFoundItems();
-    }, []);
+    }, [navigate]);
 
     const handleClaim = (itemId) => {
+        const organizationName = sessionStorage.getItem('organizationName');
+        const secureCode = sessionStorage.getItem('secureCode');
+
+        if (!organizationName || !secureCode) {
+            console.error('Organization data missing in session storage.');
+            alert('Organization data is missing. Please re-login.');
+            navigate('/user-home');
+            return;
+        }
+
         console.log(`Claiming item with ID: ${itemId}`);
-        navigate(`/claim-request/${itemId}`); 
+        navigate(`/claim-request/${itemId}`);
     };
 
     return (
