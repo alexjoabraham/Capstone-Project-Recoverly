@@ -112,15 +112,6 @@ router.post('/validate-organization', async (req, res) => {
   }
 });
 
-router.get('/found-items', async (req, res) => {
-  try {
-    const foundItems = await FoundItem.find();
-    res.status(200).json(foundItems);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching found items' });
-  }
-});
-
 router.get('/found-item/:id', async (req, res) => {
   try {
     const foundItem = await FoundItem.findById(req.params.id);
@@ -180,5 +171,29 @@ router.get('/claims', authenticateUser, async (req, res) => {
       res.status(500).json({ message: 'Error fetching claims' });
   }
 });
+
+router.get('/found-items', async (req, res) => {
+  try {
+    const { organization_name, organization_securecode } = req.query;
+
+    const admin = await Admin.findOne({
+      organization_name,
+      organization_securecode,
+    });
+
+    if (!admin) {
+      return res.status(401).json({ message: 'Invalid organization credentials' });
+    }
+    console.log('Admin ID in found items get:', admin?._id);
+
+    const foundItems = await FoundItem.find({ admin_id: admin._id }).lean();
+
+    res.json(foundItems);
+  } catch (error) {
+    console.error('Error fetching found items:', error);
+    res.status(500).json({ message: 'Error fetching found items' });
+  }
+});
+
 
 module.exports = router;
