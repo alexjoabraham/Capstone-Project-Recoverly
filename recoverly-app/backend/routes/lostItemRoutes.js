@@ -43,7 +43,11 @@ router.post('/report-lost-item', (req, res, next) => {
   });
 }, async (req, res) => {
   try {
-    const { lostitem_name, lostitem_location, lostitem_description, lostitem_category, lostitem_date } = req.body;
+    const { lostitem_name, lostitem_location, lostitem_description, lostitem_category, lostitem_date, user_id, } = req.body;
+    if (!user_id) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+
     const imageUrl = req.file ? req.file.location : null;
 
     const newLostItem = new LostItem({
@@ -53,6 +57,7 @@ router.post('/report-lost-item', (req, res, next) => {
       lostitem_category,
       lostitem_date,
       lostitem_image: imageUrl,
+      user_id,
     });
 
     await newLostItem.save();

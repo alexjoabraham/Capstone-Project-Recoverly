@@ -48,8 +48,8 @@ const AdminLostItem = () => {
     switch (action) {
       case 'found':
         update = { found_flag: true };
-        successMessage = 'Found status updated successfully';
-        errorMessage = 'Error updating found status';
+        successMessage = 'Found status updated successfully and email notification sent.';
+        errorMessage = 'Error updating found status or sending email notification.';
         break;
 
       case 'notify':
@@ -79,7 +79,9 @@ const AdminLostItem = () => {
     }
 
     try {
-      await axios.put(`http://localhost:5000/api/admin-lost-items/${id}`, update);
+      console.log('Request payload in AdminLostItem:', { id, update });
+      const response = await axios.put(`http://localhost:5000/api/admin-lost-items/${id}`, update);
+      console.log('Response from backend in AdminLostItem:', response.data); 
 
       setLostItems((prevItems) =>
         prevItems.map((item) =>

@@ -7,6 +7,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Filter } from 'bad-words';
@@ -51,12 +52,29 @@ const ReportLostItem = () => {
         values.lostitem_date = null;
       }
 
+      const token = localStorage.getItem('token'); 
+      let userId = null;
+
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          userId = decoded.id;
+        } catch (error) {
+          toast.error('Invalid token. Please log in again.');
+          return;
+        }
+      } else {
+        toast.error('No token found. Please log in.');
+        return;
+      }
+
       const formData = new FormData();
       formData.append('lostitem_name', values.lostitem_name);
       formData.append('lostitem_location', values.lostitem_location);
       formData.append('lostitem_description', values.lostitem_description);
       formData.append('lostitem_category', values.lostitem_category);
       formData.append('lostitem_date', values.lostitem_date);
+      formData.append('user_id', userId);
       if (image) {
         formData.append('lostitem_image', image);
       }
