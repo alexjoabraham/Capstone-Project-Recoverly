@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const LostItem = require('../models/LostItem');
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const Admin = require('../models/Admin');
+const authenticateAdmin = require('../middleware/authenticateAdmin');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
@@ -35,12 +38,21 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('Received request with ID in adminlostitemroutes:', id);
-    console.log('Request body in adminlostitemroutes:', req.body);
-    const updatedItem = await LostItem.findByIdAndUpdate(id, req.body, { new: true });
+    const updatedData = req.body;
+
+    console.log('Admin ID making the update:', req.adminId); 
+    console.log('Update payload received:', updatedData);
+    
+    const admin = await Admin.findById(req.adminId);
+    if (!admin) {
+      console.log('Admin not found for ID:', req.adminId);
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+    console.log('Admin details:', admin);
+    const updatedItem = await LostItem.findByIdAndUpdate(id, updatedData, { new: true });
     if (!updatedItem) {
       console.log('Item not found for ID in adminlostitemroutes:', id);
       return res.status(404).json({ message: 'Item not found' });
@@ -59,9 +71,28 @@ router.put('/:id', async (req, res) => {
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: user.user_email,
-        subject: 'Item Found Notification',
-        text: `Dear ${user.user_name},\n\nGood news! Your lost item "${updatedItem.lostitem_name}" has been marked as found. Please contact the admin for further details.\n\nBest regards,\nRecoverly Team`,
+        subject: 'Important: Update on Your Lost Item Status',
+        html: `
+          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <h2 style="color: #0056b3;">Good News!</h2>
+            <p>Dear <strong>${user.user_name}</strong>,</p>
+            <p>We are pleased to inform you that your lost item, <strong>${updatedItem.lostitem_name}</strong>, has been successfully marked as found.</p>
+            <p><strong>Details:</strong></p>
+            <ul>
+              <li><strong>Organization Name:</strong> ${admin.organization_name}</li>
+              <li><strong>Address:</strong> ${admin.organization_address}</li>
+            </ul>
+            <p>To retrieve your item or for further assistance, please contact the admin using the details below:</p>
+            <ul>
+              <li><strong>Admin Name:</strong> ${admin.admin_name}</li>
+              <li><strong>Admin Email:</strong> <a href="mailto:${admin.admin_email}">${admin.admin_email}</a></li>
+            </ul>
+            <p>Thank you for using <strong>Recoverly</strong>. We’re here to assist you every step of the way.</p>
+            <p style="color: #777;">Best regards,<br/>The Recoverly Team</p>
+          </div>
+        `,
       };
+      
 
       await transporter.sendMail(mailOptions);
       console.log('Email sent to user:', user.user_email);

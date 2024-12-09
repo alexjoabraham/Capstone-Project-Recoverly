@@ -79,9 +79,21 @@ const AdminLostItem = () => {
     }
 
     try {
-      console.log('Request payload in AdminLostItem:', { id, update });
-      const response = await axios.put(`http://localhost:5000/api/admin-lost-items/${id}`, update);
-      console.log('Response from backend in AdminLostItem:', response.data); 
+      const adminToken = localStorage.getItem('adminToken');
+
+      if (!adminToken) {
+        throw new Error('Admin token not found in local storage');
+      }
+    
+      console.log('Sending request to backend:', { id, update, adminToken });
+    
+      await axios.put(
+        `http://localhost:5000/api/admin-lost-items/${id}`,
+        update,
+        {
+          headers: { Authorization: `Bearer ${adminToken}` },
+        }
+      );
 
       setLostItems((prevItems) =>
         prevItems.map((item) =>
