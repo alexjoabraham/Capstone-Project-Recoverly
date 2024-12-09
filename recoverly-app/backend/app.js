@@ -8,6 +8,7 @@ const lostItemRoutes = require('./routes/lostItemRoutes');
 const adminDashboardRoutes = require('./routes/adminDashboardRoutes');
 const adminLostItemRoutes = require('./routes/adminLostItemRoutes'); 
 const adminClaimRequestRoutes = require('./routes/adminClaimRequestRoutes');
+const emailListRoutes = require('./routes/emailListRoutes');
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use('/api/lost-items', lostItemRoutes);
 app.use('/api/admin-dashboard', adminDashboardRoutes);
 app.use('/api/admin-lost-items', adminLostItemRoutes);
 app.use('/api/admin-claim-requests', adminClaimRequestRoutes);
+app.use('/api/email-list', emailListRoutes);
 
 app.get('/', (req, res) => {
   res.send('API is running...');
