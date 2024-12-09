@@ -186,7 +186,10 @@ router.get('/found-items', async (req, res) => {
     }
     console.log('Admin ID in found items get:', admin?._id);
 
-    const foundItems = await FoundItem.find({ admin_id: admin._id }).lean();
+    const foundItems = await FoundItem.find({ 
+      admin_id: admin._id,
+      admin_approved: false, 
+    }).lean();
 
     res.json(foundItems);
   } catch (error) {

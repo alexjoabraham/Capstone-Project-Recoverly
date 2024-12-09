@@ -40,6 +40,8 @@ const FoundItem = require('../models/FoundItem');
       if (!claimRequest) {
         return res.status(404).json({ message: 'Claim request not found' });
       }
+
+      await FoundItem.findByIdAndUpdate(claimRequest.founditem_id, { admin_approved: true });
   
       res.status(200).json({ message: 'Claim approved successfully', claimRequest });
     } catch (error) {

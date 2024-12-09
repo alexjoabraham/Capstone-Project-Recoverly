@@ -7,7 +7,7 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const isAdminRoute = config.url.includes('/admins') || config.url.includes('/admin-dashboard');
+    const isAdminRoute = config.url.includes('/admins') || config.url.includes('/admin-dashboard') || config.url.includes('/email-list');
     const tokenKey = isAdminRoute ? 'adminToken' : 'userToken';
 
     const token = localStorage.getItem(tokenKey);

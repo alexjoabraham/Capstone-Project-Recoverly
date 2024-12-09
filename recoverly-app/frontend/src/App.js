@@ -17,7 +17,7 @@ import AdminClaimRequest from './components/AdminClaimRequest';
 import ClaimItemsPage from './components/ClaimItemsPage';
 import UserClaimRequest from './components/UserClaimRequest';
 import theme from './theme';
-import EmailList from './components/EmailList';
+import EmailListPage from './components/EmailListPage';
 import FoundItems from './components/FoundItems';
 import PaymentPage from './components/PaymentPage';
 
@@ -38,12 +38,13 @@ function App() {
             <Route path="/claim-request/:id" element={<UserClaimRequest />} />
             {/* <Route path="/" element={<AdminRegister />} />  */}
             <Route path="/" element={<HomePage />} />
-            <Route path="/email-list" element={<EmailList />} /> 
+            <Route path="/email-list" element={<EmailListPage />} /> 
             <Route path="/found-items" element={<FoundItems />} /> 
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin-lost-items" element={<AdminLostItem />} />
             <Route path="/admin-claim-requests" element={<AdminClaimRequest />} />
+            <Route path="/email-list" element={<EmailListPage />} />
           </Routes>
         </div>
         <Footer />
