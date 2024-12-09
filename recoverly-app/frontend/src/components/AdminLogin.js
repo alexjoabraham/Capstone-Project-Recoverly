@@ -45,13 +45,11 @@ const AdminLogin = () => {
           fullWidth
           margin="normal"
           name="email"
-          type="email"
           value={formik.values.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           error={formik.touched.email && Boolean(formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
-          required
         />
         <TextField
           label="Your Password"
@@ -65,7 +63,6 @@ const AdminLogin = () => {
           onBlur={formik.handleBlur}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
-          required
         />
         <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '16px' }}>
           Login
