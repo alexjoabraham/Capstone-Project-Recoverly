@@ -37,6 +37,12 @@ const EmailListPage = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingEmail, setEditingEmail] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [notifyModalOpen, setNotifyModalOpen] = useState(false);
+  const [emailContent, setEmailContent] = useState({
+    greeting: "",
+    secureCode: "",
+    thankYou: "Thank you for using our Lost and Found service.",
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -136,10 +142,11 @@ const EmailListPage = () => {
     try {
       await axios.post(
         "http://localhost:5000/api/email-list/notify",
-        { adminId },
+        { adminId, secureCode: emailContent.secureCode },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Notifications sent successfully!");
+      setNotifyModalOpen(false);
     } catch (error) {
       toast.error("Failed to send notifications.");
     }
@@ -225,7 +232,7 @@ const EmailListPage = () => {
           variant="contained"
           color="primary"
           startIcon={<NotificationsIcon />}
-          onClick={handleNotify}
+          onClick={() => setNotifyModalOpen(true)}
         >
           Notify
         </Button>
@@ -233,6 +240,40 @@ const EmailListPage = () => {
           {showAddForm ? "Cancel" : "Add New Email"}
         </Button>
       </Box>
+      <Modal open={notifyModalOpen} onClose={() => setNotifyModalOpen(false)}>
+        <Box
+          sx={{
+            maxWidth: 400,
+            margin: "auto",
+            marginTop: 10,
+            padding: 4,
+            backgroundColor: "white",
+            borderRadius: 2,
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            Email Notification
+          </Typography>
+          <TextField
+            label="Secure Code"
+            fullWidth
+            value={emailContent.secureCode}
+            onChange={(e) =>
+              setEmailContent({ ...emailContent, secureCode: e.target.value })
+            }
+            sx={{ marginBottom: 2 }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={handleNotify}
+          >
+            Send Notifications
+          </Button>
+        </Box>
+      </Modal>
+
 
       {showAddForm && (
         <Box sx={{ marginTop: 4 }}>
