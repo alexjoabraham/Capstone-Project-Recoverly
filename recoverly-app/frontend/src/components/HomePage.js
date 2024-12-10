@@ -4,19 +4,33 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/system';
 
 const BackgroundBox = styled(Box)({
-  backgroundImage: 'url("images/Hero_Recoverly.jpeg")',
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  color: '#fff',
-  padding: '100px 0',
-  textAlign: 'center',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  backgroundColor: '#e7d8cd',
+  padding: '20px 20px',
+  textAlign: 'left',
+  borderRadius: '8px',
 });
 
-const TextContainer = styled(Box)({
-  backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  padding: '20px',
+const ContentBox = styled(Box)({
+  flex: 1,
+  paddingRight: '20px',
+  paddingLeft: '140px',
+});
+
+const ImageBox = styled(Box)({
+  flex: 1,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+});
+
+const StyledImage = styled('img')({
+  maxWidth: '100%',
+  maxHeight: '500px',
+  objectFit: 'contain',
   borderRadius: '8px',
-  display: 'inline-block',
 });
 
 const FeatureCard = styled(Card)({
@@ -72,20 +86,20 @@ const HomePage = () => {
   };
 
   const handleDonate = () => {
-    navigate('/payment'); // Navigate to PaymentPage for donation
+    navigate('/payment');
   };
 
   return (
     <Container maxWidth="xl">
       <BackgroundBox>
-        <TextContainer>
-          <Typography variant="h2" gutterBottom sx={{ color: '#ffffff' }}>
+        <ContentBox>
+          <Typography variant="h2" gutterBottom sx={{ color: '#333' }}>
             Welcome to Recoverly
           </Typography>
           <Typography variant="h5" gutterBottom>
             Your Easy Lost and Found Solution
           </Typography>
-          <Typography variant="body1" sx={{ mt: 2, maxWidth: 600, mx: 'auto' }}>
+          <Typography variant="body1" sx={{ mt: 2, maxWidth: 600 }}>
             Recoverly is here to help schools, colleges, gyms, offices, and other places manage lost and found items in one simple, user-friendly space. Whether you’re an admin keeping track of found items or hoping to find what’s been lost, Recoverly is designed to make the process easier, faster, and more secure.
           </Typography>
           <Button
@@ -96,14 +110,17 @@ const HomePage = () => {
               color: 'white',
               '&:hover': {
                 backgroundColor: '#e5decc',
-                color: 'black'
+                color: 'black',
               },
             }}
             onClick={handleGetStarted}
           >
             Get Started
           </Button>
-        </TextContainer>
+        </ContentBox>
+        <ImageBox>
+          <StyledImage src="images/Hero_Image_Recoverly.png" alt="Recoverly Hero" />
+        </ImageBox>
       </BackgroundBox>
 
       <Dialog open={openModal} onClose={handleCloseModal}>
@@ -187,10 +204,10 @@ const HomePage = () => {
             variant="contained"
             sx={{
               mt: 2,
-              backgroundColor: '#ca7802', // Same color as the Get Started button
+              backgroundColor: '#ca7802',
               color: 'white',
               '&:hover': {
-                backgroundColor: '#e5decc', // Hover effect
+                backgroundColor: '#e5decc',
                 color: 'black',
               },
             }}
