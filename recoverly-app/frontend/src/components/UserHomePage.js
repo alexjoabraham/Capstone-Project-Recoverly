@@ -121,14 +121,16 @@ const UserHomePage = () => {
                         }}
                     >
                         <FormControl fullWidth>
-                            <InputLabel>Organization Name</InputLabel>
+                        <InputLabel id="organization-name-label">Organization Name</InputLabel>
                             <Select
                                 value={organizationName}
                                 onChange={(e) => setOrganizationName(e.target.value)}
+                                labelId="organization-name-label"
                                 label="Organization Name"
+                                inputProps={{ 'aria-labelledby': 'organization-name-label' }} 
                             >
                                 {organizations.map((org) => (
-                                    <MenuItem key={org._id} value={org.organization_name}>
+                                    <MenuItem key={org._id} value={org.organization_name} aria-label={org.organization_name}>
                                         {org.organization_name}
                                     </MenuItem>
                                 ))}
