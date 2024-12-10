@@ -13,6 +13,7 @@ const categories = ['Electronics', 'Clothing', 'Accessories', 'Documents', 'Othe
 
 const AdminDashboard = () => {
   const [adminId, setAdminId] = useState(null);
+  const [adminName, setAdminName] = useState('');
   const [token, setToken] = useState(null); 
   const [itemName, setItemName] = useState('');
   const [location, setLocation] = useState('');
@@ -37,6 +38,7 @@ const AdminDashboard = () => {
       console.log('Decoded Admin ID:', decoded?.id);
       setAdminId(decoded?.id);
       fetchFoundItems(decoded.id);
+      fetchAdminDetails(decoded.id);
     }
   }, []);
 
@@ -53,6 +55,18 @@ const AdminDashboard = () => {
       setFilteredItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);
+    }
+  };
+
+  const fetchAdminDetails = async (adminId) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await axios.get('http://localhost:5000/api/admin-dashboard/admin-details', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAdminName(response.data.admin_name);
+    } catch (error) {
+      console.error('Error fetching admin details:', error);
     }
   };
 
@@ -168,9 +182,12 @@ const AdminDashboard = () => {
 
   return (
     <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5">Admin Dashboard</Typography>
-      </Box>
+      <Typography variant="h4" align="center" gutterBottom>
+        Admin Dashboard
+      </Typography>
+      <Typography variant="h6" color="textSecondary" gutterBottom>
+        Hello, {adminName ? adminName : 'Admin'}
+      </Typography>
       <Typography variant="h5" gutterBottom align="center">
         {editMode ? 'Edit Found Item' : 'Add Found Item'}
       </Typography>
