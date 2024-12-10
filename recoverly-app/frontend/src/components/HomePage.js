@@ -107,7 +107,7 @@ const HomePage = () => {
             sx={{
               mt: 4,
               backgroundColor: '#ca7802',
-              color: 'white',
+              color: 'black',
               '&:hover': {
                 backgroundColor: '#e5decc',
                 color: 'black',
@@ -164,7 +164,7 @@ const HomePage = () => {
             <Grid item xs={12} sm={6} md={4} key={index}>
               <FeatureCard sx={{
               backgroundColor: '#ca7802',
-              color: 'white'
+              color: 'black'
             }}>
                 <CardContent>
                   <Typography variant="h6">{feature.title}</Typography>
