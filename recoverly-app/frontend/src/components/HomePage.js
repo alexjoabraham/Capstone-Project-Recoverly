@@ -112,11 +112,15 @@ const HomePage = () => {
                 backgroundColor: '#e5decc',
                 color: 'black',
               },
+              fontSize: '18px', 
+              padding: '12px 30px', 
+              minWidth: '160px', 
             }}
             onClick={handleGetStarted}
-          >
+            >
             Get Started
           </Button>
+
         </ContentBox>
         <ImageBox>
           <StyledImage src="images/Hero_Image_Recoverly.png" alt="Recoverly Hero" />
