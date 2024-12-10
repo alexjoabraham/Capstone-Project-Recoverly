@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Container, Card, CardContent, CardActions, Button, Typography, Grid } from '@mui/material';
+import { Container, Card, CardContent, CardActions, Button, Typography, Grid, Box } from '@mui/material';
 
 const ClaimItemsPage = () => {
     const [foundItems, setFoundItems] = useState([]);
@@ -15,7 +15,7 @@ const ClaimItemsPage = () => {
 
                 if (!organizationName || !secureCode) {
                     console.error('Organization data missing in session storage.');
-                    navigate('/user-home'); 
+                    navigate('/user-home');
                     return;
                 }
 
@@ -55,39 +55,55 @@ const ClaimItemsPage = () => {
             <Typography variant="h4" gutterBottom>
                 Claim Items
             </Typography>
-            <Grid container spacing={3}>
-                {foundItems.map((item) => (
-                    <Grid item xs={12} sm={6} md={4} key={item._id}>
-                        <Card sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-                            <CardContent>
-                                <Typography variant="h6">{item.founditem_name}</Typography>
-                                <Typography variant="body2" color="textSecondary">
-                                    Category: {item.founditem_category}
-                                </Typography>
-                                <Typography variant="body2" color="textSecondary">
-                                    Date Found: {new Date(item.founditem_date).toLocaleDateString()}
-                                </Typography>
-                                <Typography variant="body2" color="textSecondary">
-                                    Location: {item.founditem_location}
-                                </Typography>
-                                <Typography variant="body2" color="textSecondary">
-                                    Description: {item.founditem_description}
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => handleClaim(item._id)}
-                                    sx={{ margin: 'auto' }}
-                                >
-                                    Claim
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
+
+            {foundItems.length === 0 ? (
+                <Box sx={{ textAlign: 'center', marginTop: 4 }}>
+                    <Typography variant="h6" color="textSecondary">
+                        No items found to claim at the moment. Please check back later.
+                    </Typography>
+                </Box>
+            ) : (
+                <Grid container spacing={3}>
+                    {foundItems.map((item) => (
+                        <Grid item xs={12} sm={6} md={4} key={item._id}>
+                            <Card
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-between',
+                                    height: '100%',
+                                }}
+                            >
+                                <CardContent>
+                                    <Typography variant="h6">{item.founditem_name}</Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Category: {item.founditem_category}
+                                    </Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Date Found: {new Date(item.founditem_date).toLocaleDateString()}
+                                    </Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Location: {item.founditem_location}
+                                    </Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Description: {item.founditem_description}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => handleClaim(item._id)}
+                                        sx={{ margin: 'auto' }}
+                                    >
+                                        Claim
+                                    </Button>
+                                </CardActions>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
+            )}
         </Container>
     );
 };

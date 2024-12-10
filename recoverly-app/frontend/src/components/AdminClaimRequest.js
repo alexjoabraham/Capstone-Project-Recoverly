@@ -28,7 +28,15 @@ const AdminClaimRequest = () => {
 
   const handleApprove = async (id) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/admin-claim-requests/${id}/approve`);
+      const token = localStorage.getItem('adminToken');
+      const response = await axios.put(`http://localhost:5000/api/admin-claim-requests/${id}/approve`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       toast.success('Claim approved successfully');
       updateRequestState(id, { claimapproved: true });
     } catch (error) {
@@ -121,7 +129,7 @@ const AdminClaimRequest = () => {
                           claim.founditem_details.founditem_image || 'https://placehold.co/100?text=No+Image'
                         }
                         alt={claim.founditem_details.founditem_name || 'No Image'}
-                        sx={{ width: '100%', height: 'auto', borderRadius: 2, marginTop: 2 }}
+                        sx={{ width: '40%', height: 'auto', borderRadius: 2, marginTop: 2 }}
                       />
                     </>
                   ) : (
@@ -138,7 +146,7 @@ const AdminClaimRequest = () => {
                       claim.claim_image || 'https://placehold.co/100?text=No+Image'
                     }
                     alt="Claim Evidence"
-                    sx={{ width: '100%', height: 'auto', borderRadius: 2, marginTop: 2 }}
+                    sx={{ width: '40%', height: 'auto', borderRadius: 2, marginTop: 2 }}
                   />
                 </Box>
               </Box>

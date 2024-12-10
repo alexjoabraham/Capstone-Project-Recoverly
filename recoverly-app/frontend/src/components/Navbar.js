@@ -83,6 +83,7 @@ const Navbar = () => {
           <Button color="inherit" component={Link} to="/admin-dashboard">Dashboard</Button>
           <Button color="inherit" component={Link} to="/admin-lost-items">Lost Items</Button>
           <Button color="inherit" component={Link} to="/admin-claim-requests">Claim Requests</Button>
+            <Button color="inherit" component={Link} to="/email-list">Email List</Button>
           <Button 
             color="error" 
             onClick={handleLogout} 
