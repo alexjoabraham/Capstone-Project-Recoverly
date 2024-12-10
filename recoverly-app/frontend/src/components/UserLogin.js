@@ -8,7 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Container, Grid, TextField, Button, Typography, Box, Paper } from '@mui/material';
 
 const validationSchema = Yup.object({
-  user_email: Yup.string().email('Invalid email').required('Email is required'),
+  user_email: Yup.string().matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Invalid email address. Must be in the format abc@domain.com').required('Email is required'),
   user_password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
 });
 
