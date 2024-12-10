@@ -36,72 +36,91 @@ const AdminLogin = () => {
   });
 
   return (
-    <Container maxWidth="md">
-      <Grid container spacing={2} alignItems="center" style={{ height: '80vh' }}>
-        <Grid item xs={12} sm={6}>
-          <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-            <img
-              src="images/Admin.png"
-              alt="Admin"
-              style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
-            />
-          </Box>
-        </Grid>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Container maxWidth="md" sx={{ flexGrow: 1 }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6}>
+            <Box display="flex" justifyContent="center" alignItems="center" height={{ xs: 'auto', sm: '100%' }}>
+              <img
+                src="images/Admin.png"
+                alt="Admin"
+                style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
+              />
+            </Box>
+          </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <Paper elevation={3} style={{ padding: '24px', borderRadius: '8px', height:'415px' }}>
-            <Typography
-              variant="h5"
-              align="center"
-              gutterBottom
-              style={{ color: '#222933', fontWeight: 'bold' }}
+          <Grid item xs={12} sm={6}>
+            <Paper
+              elevation={3}
+              sx={{
+                padding: 3,
+                borderRadius: 2,
+                width: '100%',
+                height: '415px',
+                boxSizing: 'border-box',
+              }}
             >
-              Admin Login
-            </Typography>
-            <form onSubmit={formik.handleSubmit}>
-              <TextField
-                label="Email"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                name="email"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.email && Boolean(formik.errors.email)}
-                helperText={formik.touched.email && formik.errors.email}
-              />
-              <TextField
-                label="Password"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                name="password"
-                type="password"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.password && Boolean(formik.errors.password)}
-                helperText={formik.touched.password && formik.errors.password}
-              />
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                style={{ marginTop: '16px' }}
+              <Typography
+                variant="h5"
+                align="center"
+                gutterBottom
+                sx={{ color: '#222933', fontWeight: 'bold' }}
               >
-                Login
-              </Button>
-            </form>
-            <Typography align="center" style={{ marginTop: '16px' }}>
-              New Admin? <Link to="/admin-register">Register Here</Link>
-            </Typography>
-          </Paper>
+                Admin Login
+              </Typography>
+              <form onSubmit={formik.handleSubmit}>
+                <TextField
+                  label="Email"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  name="email"
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.email && Boolean(formik.errors.email)}
+                  helperText={formik.touched.email && formik.errors.email}
+                />
+                <TextField
+                  label="Password"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  name="password"
+                  type="password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.password && Boolean(formik.errors.password)}
+                  helperText={formik.touched.password && formik.errors.password}
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  sx={{ mt: 2 }}
+                >
+                  Login
+                </Button>
+              </form>
+              <Typography align="center" sx={{ mt: 2 }}>
+                New Admin? <Link to="/admin-register">Register Here</Link>
+              </Typography>
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
+      </Container>
       <ToastContainer />
-    </Container>
+    </Box>
   );
 };
 

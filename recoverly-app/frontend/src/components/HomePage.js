@@ -1,23 +1,45 @@
 import React, { useState } from 'react';
-import { Box, Container, Typography, Button, Grid, Card, CardContent, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  useMediaQuery,
+} from '@mui/material';
+import { useTheme, styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
-import { styled } from '@mui/system';
 
-const BackgroundBox = styled(Box)({
+const BackgroundBox = styled(Box)(({ theme }) => ({
   display: 'flex',
+  flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'space-between',
   backgroundColor: '#e7d8cd',
-  padding: '20px 20px',
+  padding: '20px',
   textAlign: 'left',
   borderRadius: '8px',
-});
+  [theme.breakpoints.up('md')]: {
+    flexDirection: 'row',
+  },
+}));
 
-const ContentBox = styled(Box)({
+const ContentBox = styled(Box)(({ theme }) => ({
   flex: 1,
   paddingRight: '20px',
-  paddingLeft: '140px',
-});
+  paddingLeft: '20px',
+  textAlign: 'center',
+  [theme.breakpoints.up('md')]: {
+    textAlign: 'left',
+    paddingLeft: '60px',
+  },
+}));
 
 const ImageBox = styled(Box)({
   flex: 1,
@@ -28,7 +50,7 @@ const ImageBox = styled(Box)({
 
 const StyledImage = styled('img')({
   maxWidth: '100%',
-  maxHeight: '500px',
+  maxHeight: '400px',
   objectFit: 'contain',
   borderRadius: '8px',
 });
@@ -45,23 +67,12 @@ const FeatureCard = styled(Card)({
   },
 });
 
-const StyledDialogContent = styled(DialogContent)({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '20px',
-  minHeight: '100px',
-});
-
-const StyledDialogActions = styled(DialogActions)({
-  justifyContent: 'center',
-  padding: '20px',
-});
-
 const HomePage = () => {
   const [showMore, setShowMore] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleLearnMore = () => {
     setShowMore(!showMore);
@@ -93,10 +104,10 @@ const HomePage = () => {
     <Container maxWidth="xl">
       <BackgroundBox>
         <ContentBox>
-          <Typography variant="h2" gutterBottom sx={{ color: '#333' }}>
+          <Typography variant={isSmallScreen ? 'h4' : 'h2'} gutterBottom sx={{ color: '#333' }}>
             Welcome to Recoverly
           </Typography>
-          <Typography variant="h5" gutterBottom>
+          <Typography variant="h6" gutterBottom>
             Your Easy Lost and Found Solution
           </Typography>
           <Typography variant="body1" sx={{ mt: 2, maxWidth: 600 }}>
@@ -112,15 +123,14 @@ const HomePage = () => {
                 backgroundColor: '#e5decc',
                 color: 'black',
               },
-              fontSize: '18px', 
-              padding: '12px 30px', 
-              minWidth: '160px', 
+              fontSize: '16px',
+              padding: '10px 20px',
+              minWidth: '140px',
             }}
             onClick={handleGetStarted}
-            >
+          >
             Get Started
           </Button>
-
         </ContentBox>
         <ImageBox>
           <StyledImage src="images/Hero_Image_Recoverly.png" alt="Recoverly Hero" />
@@ -129,19 +139,19 @@ const HomePage = () => {
 
       <Dialog open={openModal} onClose={handleCloseModal}>
         <DialogTitle align="center">Select Your Role</DialogTitle>
-        <StyledDialogContent>
+        <DialogContent>
           <Typography variant="body1" align="center" sx={{ mb: 2 }}>
             Continue as a User or Admin.
           </Typography>
-          <StyledDialogActions>
+          <DialogActions sx={{ justifyContent: 'center' }}>
             <Button onClick={handleUserLogin} color="primary" variant="contained" sx={{ mx: 2 }}>
               User
             </Button>
             <Button onClick={handleAdminLogin} color="secondary" variant="contained" sx={{ mx: 2 }}>
               Admin
             </Button>
-          </StyledDialogActions>
-        </StyledDialogContent>
+          </DialogActions>
+        </DialogContent>
       </Dialog>
 
       <Box sx={{ py: 6 }}>
@@ -162,15 +172,15 @@ const HomePage = () => {
             { title: 'Helpful Analytics', description: 'Admins can see real-time data on lost and found items to keep track of everything.' },
           ].map((feature, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
-              <FeatureCard sx={{
-              backgroundColor: '#ca7802',
-              color: 'black'
-            }}>
+              <FeatureCard
+                sx={{
+                  backgroundColor: '#ca7802',
+                  color: 'black',
+                }}
+              >
                 <CardContent>
                   <Typography variant="h6">{feature.title}</Typography>
-                  <Typography variant="body2">
-                    {feature.description}
-                  </Typography>
+                  <Typography variant="body2">{feature.description}</Typography>
                 </CardContent>
               </FeatureCard>
             </Grid>
@@ -202,21 +212,21 @@ const HomePage = () => {
           {showMore ? 'Show Less' : 'Show More'}
         </Button>
       </Box>
-      <Box sx={{ mt: 4 }}>
+      <Box sx={{ mt: 4, textAlign: 'center' }}>
         <Typography variant="h4">Support Recoverly</Typography>
-          <Button
-            variant="contained"
-            sx={{
-              mt: 2,
-              backgroundColor: '#ca7802',
+        <Button
+          variant="contained"
+          sx={{
+            mt: 2,
+            backgroundColor: '#ca7802',
+            color: 'black',
+            '&:hover': {
+              backgroundColor: '#e5decc',
               color: 'black',
-              '&:hover': {
-                backgroundColor: '#e5decc',
-                color: 'black',
-              },
-            }}
-            onClick={handleDonate}
-          >
+            },
+          }}
+          onClick={handleDonate}
+        >
           Donate with PayPal
         </Button>
       </Box>

@@ -36,68 +36,87 @@ const UserLogin = () => {
   });
 
   return (
-    <Container maxWidth="md">
-      <Grid container spacing={2} alignItems="center" style={{ height: '80vh' }}>
-        <Grid item xs={12} sm={6}>
-          <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-            <img
-              src="images/User.png"
-              alt="User"
-              style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
-            />
-          </Box>
-        </Grid>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Container maxWidth="md" sx={{ flexGrow: 1 }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6}>
+            <Box display="flex" justifyContent="center" alignItems="center" height={{ xs: 'auto', sm: '100%' }}>
+              <img
+                src="images/User.png"
+                alt="User"
+                style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
+              />
+            </Box>
+          </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <Paper elevation={3} style={{ padding: '24px', borderRadius: '8px', height: '415px' }}>
-            <Typography
-              variant="h5"
-              align="center"
-              gutterBottom
-              style={{ color: '#222933', fontWeight: 'bold' }}
+          <Grid item xs={12} sm={6}>
+            <Paper
+              elevation={3}
+              sx={{
+                padding: 3,
+                borderRadius: 2,
+                width: '100%',
+                height: '415px',
+                boxSizing: 'border-box',
+              }}
             >
-              User Login
-            </Typography>
-            <form onSubmit={formik.handleSubmit}>
-              <TextField
-                label="Email"
-                name="user_email"
-                value={formik.values.user_email}
-                onChange={formik.handleChange}
-                error={formik.touched.user_email && Boolean(formik.errors.user_email)}
-                helperText={formik.touched.user_email && formik.errors.user_email}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Password"
-                name="user_password"
-                type="password"
-                value={formik.values.user_password}
-                onChange={formik.handleChange}
-                error={formik.touched.user_password && Boolean(formik.errors.user_password)}
-                helperText={formik.touched.user_password && formik.errors.user_password}
-                fullWidth
-                margin="normal"
-              />
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                style={{ marginTop: '16px' }}
+              <Typography
+                variant="h5"
+                align="center"
+                gutterBottom
+                sx={{ color: '#222933', fontWeight: 'bold' }}
               >
-                Login
-              </Button>
-            </form>
-            <Typography align="center" style={{ marginTop: '16px' }}>
-              New User? <Link to="/user-register">Register Here</Link>
-            </Typography>
-          </Paper>
+                User Login
+              </Typography>
+              <form onSubmit={formik.handleSubmit}>
+                <TextField
+                  label="Email"
+                  name="user_email"
+                  value={formik.values.user_email}
+                  onChange={formik.handleChange}
+                  error={formik.touched.user_email && Boolean(formik.errors.user_email)}
+                  helperText={formik.touched.user_email && formik.errors.user_email}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Password"
+                  name="user_password"
+                  type="password"
+                  value={formik.values.user_password}
+                  onChange={formik.handleChange}
+                  error={formik.touched.user_password && Boolean(formik.errors.user_password)}
+                  helperText={formik.touched.user_password && formik.errors.user_password}
+                  fullWidth
+                  margin="normal"
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  sx={{ mt: 2 }}
+                >
+                  Login
+                </Button>
+              </form>
+              <Typography align="center" sx={{ mt: 2 }}>
+                New User? <Link to="/user-register">Register Here</Link>
+              </Typography>
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
+      </Container>
       <ToastContainer />
-    </Container>
+    </Box>
   );
 };
 
