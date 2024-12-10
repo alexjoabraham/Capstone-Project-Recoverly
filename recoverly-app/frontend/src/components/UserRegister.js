@@ -8,8 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Container, TextField, Button, Typography } from '@mui/material';
 
 const validationSchema = Yup.object({
-  user_name: Yup.string().matches(/^[A-Za-z]+$/, 'Name must contain only letters').required('Name is required'),
-  user_email: Yup.string().email('Invalid email').required('Email is required'),
+  user_name: Yup.string().matches(/^[A-Za-z\s]+$/, 'Name must contain only letters').required('Name is required'),
+  user_email: Yup.string().matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,  'Invalid email address. Must be in the format abc@domain.com').required('Email is required'),
   user_phone: Yup.string().matches(/^[0-9]{10}$/, 'Phone number must be 10 digits').required('Phone number is required'),
   user_password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
   confirm_password: Yup.string()
