@@ -209,7 +209,7 @@ const HomePage = () => {
             sx={{
               mt: 2,
               backgroundColor: '#ca7802',
-              color: 'white',
+              color: 'black',
               '&:hover': {
                 backgroundColor: '#e5decc',
                 color: 'black',
