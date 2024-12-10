@@ -185,7 +185,7 @@ const AdminDashboard = () => {
       <Typography variant="h4" align="center" gutterBottom>
         Admin Dashboard
       </Typography>
-      <Typography variant="h6" color="textSecondary" gutterBottom>
+      <Typography variant="h6" align="left" color="textSecondary" gutterBottom>
         Hello, {adminName ? adminName : 'Admin'}
       </Typography>
       <Typography variant="h5" gutterBottom align="center">
