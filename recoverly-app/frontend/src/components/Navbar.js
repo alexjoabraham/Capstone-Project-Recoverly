@@ -187,7 +187,7 @@ const Navbar = () => {
           <Link to="/">
             <img 
               src="/images/Logo_Recoverly.png" 
-              alt="Logo" 
+              alt="Logo for the recoverly app" 
               style={{ height: '40px', marginRight: '16px', cursor: 'pointer' }} 
             />
           </Link>
