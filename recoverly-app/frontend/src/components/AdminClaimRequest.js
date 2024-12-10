@@ -28,7 +28,15 @@ const AdminClaimRequest = () => {
 
   const handleApprove = async (id) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/admin-claim-requests/${id}/approve`);
+      const token = localStorage.getItem('adminToken');
+      const response = await axios.put(`http://localhost:5000/api/admin-claim-requests/${id}/approve`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       toast.success('Claim approved successfully');
       updateRequestState(id, { claimapproved: true });
     } catch (error) {
