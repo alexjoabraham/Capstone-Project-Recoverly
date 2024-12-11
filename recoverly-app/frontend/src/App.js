@@ -20,6 +20,7 @@ import theme from './theme';
 import EmailListPage from './components/EmailListPage';
 import FoundItems from './components/FoundItems';
 import PaymentPage from './components/PaymentPage';
+import ThankYouPage from './components/ThankYouPage';
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
             <Route path="/admin-lost-items" element={<AdminLostItem />} />
             <Route path="/admin-claim-requests" element={<AdminClaimRequest />} />
             <Route path="/email-list" element={<EmailListPage />} />
+            <Route path="/thank-you" element={<ThankYouPage />} />
           </Routes>
         </div>
         <Footer />

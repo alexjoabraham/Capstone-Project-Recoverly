@@ -2,6 +2,7 @@ const { S3Client } = require('@aws-sdk/client-s3');
 const multerS3 = require('multer-s3');
 const multer = require('multer');
 const FoundItem = require('../models/FoundItem');
+const Admin = require('../models/Admin');
 const express = require('express');
 const router = express.Router();
 const authenticateAdmin = require('../middleware/authenticateAdmin')
@@ -141,6 +142,26 @@ router.delete('/:id', async (req, res) => {
   } catch (error) {
     console.error('Error deleting found item:', error);
     res.status(400).json({ message: error.message || 'Error deleting found item' });
+  }
+});
+
+router.get('/admin-details', authenticateAdmin, async (req, res) => {
+  try {
+    const admin_id = req.adminId; 
+    const admin = await Admin.findById(admin_id);
+
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    res.status(200).json({
+      admin_name: admin.admin_name,
+      organization_name: admin.organization_name,
+      admin_phone: admin.admin_phone,
+    });
+  } catch (error) {
+    console.error('Error fetching admin details:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 

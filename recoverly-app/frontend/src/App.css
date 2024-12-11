@@ -127,6 +127,9 @@ button:hover {
 }
 
 .css-s94iub-MuiInputBase-root-MuiOutlinedInput-root{
-  width: 360px;
+  width: auto;
   margin-top: 15px;
+}
+.css-1b1fjlj-MuiFormControl-root-MuiTextField-root{
+  width: 100%;
 }

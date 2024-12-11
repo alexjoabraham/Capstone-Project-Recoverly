@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Box, Container, Typography, Button, TextField } from '@mui/material';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PaymentPage = () => {
   const [donationAmount, setDonationAmount] = useState(5);
@@ -29,6 +29,12 @@ const PaymentPage = () => {
       setEmailError("");
       toast.success("Donation amount confirmed. Proceed with PayPal.");
     }
+  };
+
+  const handlePaymentSuccess = () => {
+    navigate('/thank-you', {
+      state: { donorName, donorEmail, donationAmount }
+    });
   };
 
   return (
@@ -78,6 +84,7 @@ const PaymentPage = () => {
           <Button variant="contained" color="primary" onClick={handleDonate} sx={{ mt: 2 }}>
             Confirm Donation Amount
           </Button>
+
           <Box sx={{ mt: 4, width: '100%', display: 'flex', justifyContent: 'center' }}>
             <PayPalButtons
               key={donationAmount}
@@ -88,9 +95,9 @@ const PaymentPage = () => {
                 });
               }}
               onApprove={(data, actions) => {
-                return actions.order.capture().then((details) => {
-                  toast.success(`Donation successful, thank you ${details.payer.name.given_name}!`);
-                  navigate('/thank-you'); // Navigate to a thank-you page
+                return actions.order.capture().then(() => {
+                  toast.success(`Donation successful, thank you ${donorName}!`);
+                  handlePaymentSuccess();
                 });
               }}
               onCancel={() => {
@@ -98,7 +105,7 @@ const PaymentPage = () => {
               }}
               onError={(err) => {
                 console.error(err);
-                toast.error('Something went wrong with the donation.');
+                toast.error('Something went wrong with the donation process.');
               }}
             />
           </Box>

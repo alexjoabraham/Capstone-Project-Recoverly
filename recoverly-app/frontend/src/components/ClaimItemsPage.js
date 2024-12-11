@@ -72,6 +72,7 @@ const ClaimItemsPage = () => {
                                     flexDirection: 'column',
                                     justifyContent: 'space-between',
                                     height: '100%',
+                                    backgroundColor: '#e7d8cd',
                                 }}
                             >
                                 <CardContent>

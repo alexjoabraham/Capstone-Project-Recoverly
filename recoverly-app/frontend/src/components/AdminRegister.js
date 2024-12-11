@@ -5,7 +5,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
-import { Container, TextField, Button, Typography } from '@mui/material';
+import { Container, TextField, Button, Typography, Paper } from '@mui/material';
 
 const validationSchema = Yup.object({
   admin_name: Yup.string().matches(/^[A-Za-z\s]+$/, 'Admin Name must contain only letters').required('Admin Name is required'),
@@ -22,7 +22,7 @@ const AdminRegister = () => {
   const formik = useFormik({
     initialValues: {
       admin_name: '',
-      admin_email: '', 
+      admin_email: '',
       admin_phone: '',
       admin_password: '',
       retype_password: '',
@@ -35,7 +35,7 @@ const AdminRegister = () => {
       try {
         const response = await axios.post('http://localhost:5000/api/admins/register', values);
         toast.success('Admin registered successfully!');
-        formik.resetForm(); 
+        formik.resetForm();
       } catch (error) {
         toast.error('Error registering admin: ' + error.response.data.message);
       }
@@ -43,125 +43,137 @@ const AdminRegister = () => {
   });
 
   return (
-    <Container maxWidth="xs">
-      <Typography variant="h5" align="center">Admin Registration</Typography>
-      <form onSubmit={formik.handleSubmit} className="mt-4">
-        <TextField
-          label="Admin Name"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="admin_name"
-          value={formik.values.admin_name}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.admin_name && Boolean(formik.errors.admin_name)}
-          helperText={formik.touched.admin_name && formik.errors.admin_name}
-        />
+    <Container maxWidth="sm" style={{ marginTop: '50px' }}>
+      <Paper elevation={3} style={{ padding: '24px', borderRadius: '12px' }}>
+        <Typography
+          variant="h5"
+          align="center"
+          gutterBottom
+          style={{
+            color: '#222933',
+            fontWeight: 'bold',
+            marginBottom: '16px',
+          }}
+        >
+          Admin Registration
+        </Typography>
+        <form onSubmit={formik.handleSubmit}>
+          <TextField
+            label="Admin Name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="admin_name"
+            value={formik.values.admin_name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.admin_name && Boolean(formik.errors.admin_name)}
+            helperText={formik.touched.admin_name && formik.errors.admin_name}
+          />
 
-        <TextField
-          label="Admin Email" 
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="admin_email"
-          type="email"
-          value={formik.values.admin_email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.admin_email && Boolean(formik.errors.admin_email)}
-          helperText={formik.touched.admin_email && formik.errors.admin_email}
-        />
+          <TextField
+            label="Admin Email"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="admin_email"
+            type="email"
+            value={formik.values.admin_email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.admin_email && Boolean(formik.errors.admin_email)}
+            helperText={formik.touched.admin_email && formik.errors.admin_email}
+          />
 
-        <TextField
-          label="Admin Phone"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="admin_phone"
-          value={formik.values.admin_phone}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.admin_phone && Boolean(formik.errors.admin_phone)}
-          helperText={formik.touched.admin_phone && formik.errors.admin_phone}
-        />
+          <TextField
+            label="Admin Phone"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="admin_phone"
+            value={formik.values.admin_phone}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.admin_phone && Boolean(formik.errors.admin_phone)}
+            helperText={formik.touched.admin_phone && formik.errors.admin_phone}
+          />
 
-        <TextField
-          label="Organization Name"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="organization_name"
-          value={formik.values.organization_name}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.organization_name && Boolean(formik.errors.organization_name)}
-          helperText={formik.touched.organization_name && formik.errors.organization_name}
-        />
+          <TextField
+            label="Organization Name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="organization_name"
+            value={formik.values.organization_name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.organization_name && Boolean(formik.errors.organization_name)}
+            helperText={formik.touched.organization_name && formik.errors.organization_name}
+          />
 
-        <TextField
-          label="Organization Address"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="organization_address"
-          value={formik.values.organization_address}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.organization_address && Boolean(formik.errors.organization_address)}
-          helperText={formik.touched.organization_address && formik.errors.organization_address}
-        />
+          <TextField
+            label="Organization Address"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="organization_address"
+            value={formik.values.organization_address}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.organization_address && Boolean(formik.errors.organization_address)}
+            helperText={formik.touched.organization_address && formik.errors.organization_address}
+          />
 
-        <TextField
-          label="Organization Secure Code"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="organization_securecode"
-          value={formik.values.organization_securecode}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.organization_securecode && Boolean(formik.errors.organization_securecode)}
-          helperText={formik.touched.organization_securecode && formik.errors.organization_securecode}
-        />
+          <TextField
+            label="Organization Secure Code"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="organization_securecode"
+            value={formik.values.organization_securecode}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.organization_securecode && Boolean(formik.errors.organization_securecode)}
+            helperText={formik.touched.organization_securecode && formik.errors.organization_securecode}
+          />
 
-        <TextField
-          label="Admin Password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="admin_password"
-          type="password"
-          value={formik.values.admin_password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.admin_password && Boolean(formik.errors.admin_password)}
-          helperText={formik.touched.admin_password && formik.errors.admin_password}
-        />
+          <TextField
+            label="Admin Password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="admin_password"
+            type="password"
+            value={formik.values.admin_password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.admin_password && Boolean(formik.errors.admin_password)}
+            helperText={formik.touched.admin_password && formik.errors.admin_password}
+          />
 
-        <TextField
-          label="Retype Password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          name="retype_password"
-          type="password"
-          value={formik.values.retype_password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.retype_password && Boolean(formik.errors.retype_password)}
-          helperText={formik.touched.retype_password && formik.errors.retype_password}
-        />
+          <TextField
+            label="Retype Password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="retype_password"
+            type="password"
+            value={formik.values.retype_password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.retype_password && Boolean(formik.errors.retype_password)}
+            helperText={formik.touched.retype_password && formik.errors.retype_password}
+          />
 
-        <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '16px' }}>
-          Register
-        </Button>
-      </form>
+          <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '16px' }}>
+            Register
+          </Button>
+        </form>
 
-      <Typography align="center" style={{ marginTop: '16px' }}>
-        Already registered? <Link to="/admin-login">Login Here</Link>
-      </Typography>
-
+        <Typography align="center" style={{ marginTop: '16px' }}>
+          Already registered? <Link to="/admin-login">Login Here</Link>
+        </Typography>
+      </Paper>
       <ToastContainer />
     </Container>
   );

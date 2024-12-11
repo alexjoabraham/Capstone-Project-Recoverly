@@ -7,12 +7,14 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { jwtDecode } from 'jwt-decode';
 import apiClient from '../api/apiClient';
 import axios from 'axios';
+import { Filter } from 'bad-words';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const categories = ['Electronics', 'Clothing', 'Accessories', 'Documents', 'Others'];
 
 const AdminDashboard = () => {
   const [adminId, setAdminId] = useState(null);
+  const [adminName, setAdminName] = useState('');
   const [token, setToken] = useState(null); 
   const [itemName, setItemName] = useState('');
   const [location, setLocation] = useState('');
@@ -27,6 +29,8 @@ const AdminDashboard = () => {
   const [searchText, setSearchText] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [editItemId, setEditItemId] = useState(null);
+  const [errors, setErrors] = useState({});
+  const filter = new Filter();
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -37,6 +41,7 @@ const AdminDashboard = () => {
       console.log('Decoded Admin ID:', decoded?.id);
       setAdminId(decoded?.id);
       fetchFoundItems(decoded.id);
+      fetchAdminDetails(decoded.id);
     }
   }, []);
 
@@ -56,6 +61,18 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchAdminDetails = async (adminId) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await axios.get('http://localhost:5000/api/admin-dashboard/admin-details', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAdminName(response.data.admin_name);
+    } catch (error) {
+      console.error('Error fetching admin details:', error);
+    }
+  };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
@@ -69,7 +86,26 @@ const AdminDashboard = () => {
     setImagePreview('');
   };
 
+  const validateFields = () => {
+    const errors = {};
+    if (!itemName) errors.itemName = 'Item Name is required.';
+    if (!location) errors.location = 'Location is required.';
+    if (!description) errors.description = 'Description is required.';
+    if (!category) errors.category = 'Category is required.';
+    if (!date) errors.date = 'Date is required.';
+
+    if (filter.isProfane(description)) {
+      errors.description = 'Please remove offensive language from the description.';
+    }
+
+    return errors;
+  };
+
   const handleSubmit = async () => {
+    const validationErrors = validateFields();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) return;
+
     const headers = {
       'Content-Type': 'multipart/form-data',
       'Authorization': `Bearer ${token}`,  
@@ -143,6 +179,7 @@ const AdminDashboard = () => {
     setImagePreview('');
     setEditMode(false);
     setEditItemId(null);
+    setErrors({});
   };
 
   const handleDelete = async (id) => {
@@ -168,9 +205,12 @@ const AdminDashboard = () => {
 
   return (
     <Box sx={{ maxWidth: 800, margin: 'auto', padding: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5">Admin Dashboard</Typography>
-      </Box>
+      <Typography variant="h4" align="center" gutterBottom>
+        Admin Dashboard
+      </Typography>
+      <Typography variant="h6" align="left" color="textSecondary" gutterBottom>
+        Hello, {adminName ? adminName : 'Admin'}
+      </Typography>
       <Typography variant="h5" gutterBottom align="center">
         {editMode ? 'Edit Found Item' : 'Add Found Item'}
       </Typography>
@@ -183,6 +223,8 @@ const AdminDashboard = () => {
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
             margin="normal"
+            error={!!errors.itemName}
+            helperText={errors.itemName}
           />
           <TextField
             label="Location"
@@ -190,6 +232,8 @@ const AdminDashboard = () => {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             margin="normal"
+            error={!!errors.location}
+            helperText={errors.location}
           />
           <TextField
             label="Description"
@@ -199,6 +243,8 @@ const AdminDashboard = () => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             margin="normal"
+            error={!!errors.description}
+            helperText={errors.description}
           />
         </Grid>
 
@@ -210,6 +256,8 @@ const AdminDashboard = () => {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             margin="normal"
+            error={!!errors.category}
+            helperText={errors.category}
           >
             {categories.map((option) => (
               <MenuItem key={option} value={option}>
@@ -251,7 +299,7 @@ const AdminDashboard = () => {
               label="Date"
               value={date}
               onChange={(newDate) => setDate(newDate)}
-              renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+              slots={{ textField: (params) => <TextField {...params} fullWidth margin="normal" error={!!errors.date} helperText={errors.date} /> }} // Updated to use slots.textField
             />
           </LocalizationProvider>
         </Grid>
