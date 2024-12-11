@@ -33,6 +33,15 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
+app.get('/*', function (req, res) {
+  res.sendFile(
+    path.join(__dirname, "../frontend/build/index.html"),
+    function (err) {
+      res.status(500).send(err);
+    }
+  )
+})
+
 app.use((err, req, res, next) => {
   console.error(err.message);
   res.status(500).send('Server Error');
