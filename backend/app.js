@@ -30,18 +30,18 @@ app.use('/api/admin-lost-items', adminLostItemRoutes);
 app.use('/api/admin-claim-requests', adminClaimRequestRoutes);
 app.use('/api/email-list', emailListRoutes);
 
-app.get('/', (req, res) => {
-  res.send('API is running...');
-});
+// Serve React frontend build
+const frontendPath = path.join(__dirname, '../frontend/build');
+app.use(express.static(frontendPath));
 
-app.get('/*', function (req, res) {
-  res.sendFile(
-    path.join(__dirname, "../frontend/build/index.html"),
-    function (err) {
+// Serve the frontend for all non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'index.html'), (err) => {
+    if (err) {
       res.status(500).send(err);
     }
-  )
-})
+  });
+});
 
 app.use((err, req, res, next) => {
   console.error(err.message);
