@@ -56,7 +56,7 @@ const EmailListPage = () => {
 
   const fetchEmailList = async (adminId, token) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/email-list", {
+      const response = await axios.get("https://recoverly-app-41d86cc43289.herokuapp.com/api/email-list", {
         headers: { Authorization: `Bearer ${token}` },
         params: { adminId },
       });
@@ -70,7 +70,7 @@ const EmailListPage = () => {
   const handleDelete = async (emailId) => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/email-list/${emailId}/delete`,
+        `https://recoverly-app-41d86cc43289.herokuapp.com/api/email-list/${emailId}/delete`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -85,7 +85,7 @@ const EmailListPage = () => {
   const handleDisable = async (emailId) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/email-list/${emailId}/disable`,
+        `https://recoverly-app-41d86cc43289.herokuapp.com/api/email-list/${emailId}/disable`,
         null,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -101,7 +101,7 @@ const EmailListPage = () => {
   const handleEnable = async (emailId) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/email-list/${emailId}/enable`,
+        `https://recoverly-app-41d86cc43289.herokuapp.com/api/email-list/${emailId}/enable`,
         null,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -126,7 +126,7 @@ const EmailListPage = () => {
   const handleEditSubmit = async (values) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/email-list/${editingEmail._id}/update`,
+        `https://recoverly-app-41d86cc43289.herokuapp.com/api/email-list/${editingEmail._id}/update`,
         { name: values.name, email: values.email },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -141,7 +141,7 @@ const EmailListPage = () => {
   const handleNotify = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/email-list/notify",
+        "https://recoverly-app-41d86cc43289.herokuapp.com/api/email-list/notify",
         { adminId, secureCode: emailContent.secureCode },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -283,7 +283,7 @@ const EmailListPage = () => {
             onSubmit={async (values, { setSubmitting }) => {
               try {
                 await axios.post(
-                  "http://localhost:5000/api/email-list/add",
+                  "https://recoverly-app-41d86cc43289.herokuapp.com/api/email-list/add",
                   { admin_id: adminId, name: values.name, email: values.email },
                   { headers: { Authorization: `Bearer ${token}` } }
                 );

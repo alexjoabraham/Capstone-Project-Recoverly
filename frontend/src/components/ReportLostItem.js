@@ -80,7 +80,7 @@ const ReportLostItem = () => {
       }
 
       try {
-        await axios.post('http://localhost:5000/api/lost-items/report-lost-item', formData, {
+        await axios.post('https://recoverly-app-41d86cc43289.herokuapp.com/api/lost-items/report-lost-item', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         toast.success('Lost item reported successfully!');

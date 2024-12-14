@@ -40,7 +40,7 @@ const UserRegister = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await axios.post('http://localhost:5000/api/users/register', values);
+        const response = await axios.post('https://recoverly-app-41d86cc43289.herokuapp.com/api/users/register', values);
         toast.success('User registered successfully!');
       } catch (error) {
         toast.error('Error registering user: ' + error.response.data.message);

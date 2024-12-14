@@ -17,7 +17,7 @@ const UserClaimRequest = () => {
         const fetchUserDetails = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:5000/api/users/user-details', {
+                const response = await axios.get('https://recoverly-app-41d86cc43289.herokuapp.com/api/users/user-details', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setUserDetails(response.data);
@@ -30,7 +30,7 @@ const UserClaimRequest = () => {
         const fetchFoundItem = async () => {
             try {
                 // const response = await axios.get(`http://localhost:5000/api/users/items/${id}`);
-                const response = await axios.get(`http://localhost:5000/api/users/found-item/${id}`);
+                const response = await axios.get(`https://recoverly-app-41d86cc43289.herokuapp.com/api/users/found-item/${id}`);
                 setFoundItem(response.data);  // Set found item details in state
             } catch (error) {
                 console.error('Error fetching found item:', error);
@@ -66,7 +66,7 @@ const UserClaimRequest = () => {
         formData.append('userclaim_description', claimDescription);
 
         try {
-            await axios.post('http://localhost:5000/api/users/claim-item', formData, {
+            await axios.post('https://recoverly-app-41d86cc43289.herokuapp.com/api/users/claim-item', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             toast.success('Claim request submitted successfully!');

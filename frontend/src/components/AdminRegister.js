@@ -33,7 +33,7 @@ const AdminRegister = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await axios.post('http://localhost:5000/api/admins/register', values);
+        const response = await axios.post('https://recoverly-app-41d86cc43289.herokuapp.com/api/admins/register', values);
         toast.success('Admin registered successfully!');
         formik.resetForm();
       } catch (error) {

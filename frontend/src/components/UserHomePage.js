@@ -53,7 +53,7 @@ const UserHomePage = () => {
     useEffect(() => {
         const fetchOrganizations = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/users/organizations');
+                const response = await axios.get('https://recoverly-app-41d86cc43289.herokuapp.com/api/users/organizations');
                 setOrganizations(response.data);
             } catch (error) {
                 setMessage('Error fetching organizations');
@@ -63,7 +63,7 @@ const UserHomePage = () => {
         const fetchClaims = async () => {
             try {
                 const token = localStorage.getItem('token'); 
-                const response = await axios.get('http://localhost:5000/api/users/claims', {
+                const response = await axios.get('https://recoverly-app-41d86cc43289.herokuapp.com/api/users/claims', {
                     headers: {
                         Authorization: `Bearer ${token}`, 
                     },
@@ -81,7 +81,7 @@ const UserHomePage = () => {
 
     const handleValidation = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/api/users/validate-organization', {
+            const response = await axios.post('https://recoverly-app-41d86cc43289.herokuapp.com/api/users/validate-organization', {
                 organization_name: organizationName,
                 organization_securecode: secureCode,
             });

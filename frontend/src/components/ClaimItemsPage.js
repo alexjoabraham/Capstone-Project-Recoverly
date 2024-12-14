@@ -19,7 +19,7 @@ const ClaimItemsPage = () => {
                     return;
                 }
 
-                const response = await axios.get('http://localhost:5000/api/users/found-items', {
+                const response = await axios.get('https://recoverly-app-41d86cc43289.herokuapp.com/api/users/found-items', {
                     params: {
                         organization_name: organizationName,
                         organization_securecode: secureCode,

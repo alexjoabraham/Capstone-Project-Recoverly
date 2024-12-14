@@ -18,7 +18,7 @@ const AdminLostItem = () => {
   const fetchLostItems = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/api/admin-lost-items');
+      const response = await axios.get('https://recoverly-app-41d86cc43289.herokuapp.com/api/admin-lost-items');
       setLostItems(response.data);
       setFilteredItems(response.data);
       setError('');
@@ -88,7 +88,7 @@ const AdminLostItem = () => {
       console.log('Sending request to backend:', { id, update, adminToken });
     
       await axios.put(
-        `http://localhost:5000/api/admin-lost-items/${id}`,
+        `https://recoverly-app-41d86cc43289.herokuapp.com/api/admin-lost-items/${id}`,
         update,
         {
           headers: { Authorization: `Bearer ${adminToken}` },

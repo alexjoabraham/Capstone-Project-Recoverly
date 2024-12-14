@@ -16,7 +16,7 @@ const AdminClaimRequest = () => {
   const fetchClaimRequests = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/api/admin-claim-requests');
+      const response = await axios.get('https://recoverly-app-41d86cc43289.herokuapp.com/api/admin-claim-requests');
       setClaimRequests(response.data);
     } catch (error) {
       console.error('Error fetching claim requests:', error);
@@ -29,7 +29,7 @@ const AdminClaimRequest = () => {
   const handleApprove = async (id) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await axios.put(`http://localhost:5000/api/admin-claim-requests/${id}/approve`,
+      const response = await axios.put(`https://recoverly-app-41d86cc43289.herokuapp.com/api/admin-claim-requests/${id}/approve`,
         {},
         {
           headers: {
@@ -53,7 +53,7 @@ const AdminClaimRequest = () => {
     }
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/admin-claim-requests/${id}/reject`,
+        `https://recoverly-app-41d86cc43289.herokuapp.com/api/admin-claim-requests/${id}/reject`,
         { reason: rejectReason[id] }
       );
       toast.success('Claim rejected successfully');

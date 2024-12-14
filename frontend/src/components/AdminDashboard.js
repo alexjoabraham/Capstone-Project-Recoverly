@@ -48,7 +48,7 @@ const AdminDashboard = () => {
   const fetchFoundItems = async (adminId) => {
     try {
       const token = localStorage.getItem('adminToken'); 
-      const response = await axios.get('http://localhost:5000/api/admin-dashboard', {
+      const response = await axios.get('https://recoverly-app-41d86cc43289.herokuapp.com/api/admin-dashboard', {
         headers: {
           Authorization: `Bearer ${token}`,  
         },
@@ -64,7 +64,7 @@ const AdminDashboard = () => {
   const fetchAdminDetails = async (adminId) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await axios.get('http://localhost:5000/api/admin-dashboard/admin-details', {
+      const response = await axios.get('https://recoverly-app-41d86cc43289.herokuapp.com/api/admin-dashboard/admin-details', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAdminName(response.data.admin_name);
@@ -129,13 +129,13 @@ const AdminDashboard = () => {
       if (editMode) {
         console.log(`Editing Found Item with ID: ${editItemId}`);
         const response = await apiClient.put(
-          `http://localhost:5000/api/admin-dashboard/${editItemId}`,
+          `https://recoverly-app-41d86cc43289.herokuapp.com/api/admin-dashboard/${editItemId}`,
           formData, { headers });
         console.log('Server Response (Edit):', response.data);
         toast.success('Found item updated successfully!');
       } else {
         const response = await apiClient.post(
-          'http://localhost:5000/api/admin-dashboard',
+          'https://recoverly-app-41d86cc43289.herokuapp.com/api/admin-dashboard',
           formData,
           formData, { headers });
         console.log('Server Response (Add):', response.data);
@@ -184,7 +184,7 @@ const AdminDashboard = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/admin-dashboard/${id}`);
+      await axios.delete(`https://recoverly-app-41d86cc43289.herokuapp.com/api/admin-dashboard/${id}`);
       toast.success('Found item deleted successfully!');
       fetchFoundItems();
     } catch (error) {
