@@ -21,7 +21,7 @@ const AdminLogin = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await axios.post('http://localhost:5000/api/admins/login', values);
+        const response = await axios.post('https://recoverly-app-41d86cc43289.herokuapp.com/api/admins/login', values);
         console.log('User logged in successfully:', response.data);
         console.log('Admin Login Token:', response.data.token);
         localStorage.setItem('adminToken', response.data.token);
